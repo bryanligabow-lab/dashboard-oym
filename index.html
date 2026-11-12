@@ -8,25 +8,65 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
+/* ===== TEMAS ===== */
+:root,:root[data-theme="oscuro"]{
   --bg:#0f1318; --surface:#161b22; --surface2:#1c222b; --surface3:#232a34;
   --line:#242b35; --line2:#323b47;
   --txt:#e8ecf1; --muted:#8e99a8; --faint:#656f7d;
-  --accent:#3b82f6; --accent-soft:rgba(59,130,246,.14);
-  --ok:#22c55e; --ok-soft:rgba(34,197,94,.13);
-  --warn:#f59e0b; --warn-soft:rgba(245,158,11,.13);
-  --danger:#ef4444; --danger-soft:rgba(239,68,68,.13);
-  --na:#6b7280;
-  --r:14px; --r-sm:9px;
+  --accent:#3b82f6;
+  --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --na:#6b7280;
   --sh:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.18);
 }
-:root[data-theme="light"]{
+:root[data-theme="claro"]{
   --bg:#f4f6f9; --surface:#ffffff; --surface2:#f8fafc; --surface3:#eef2f7;
   --line:#e2e8f0; --line2:#cbd5e1;
   --txt:#0f172a; --muted:#64748b; --faint:#94a3b8;
-  --accent-soft:rgba(59,130,246,.1);
+  --accent:#2563eb;
+  --ok:#16a34a; --warn:#d97706; --danger:#dc2626; --na:#94a3b8;
   --sh:0 1px 2px rgba(15,23,42,.05), 0 4px 14px rgba(15,23,42,.06);
 }
+:root[data-theme="pastel"]{
+  --bg:#f7f4fb; --surface:#ffffff; --surface2:#faf7fd; --surface3:#f1ebf8;
+  --line:#e9e1f3; --line2:#d7cae9;
+  --txt:#3b3054; --muted:#7c6f94; --faint:#a89cbd;
+  --accent:#8b7ad6;
+  --ok:#5bbd96; --warn:#e0a85c; --danger:#e08585; --na:#b3a9c4;
+  --sh:0 1px 2px rgba(80,60,120,.05), 0 4px 14px rgba(80,60,120,.07);
+}
+:root[data-theme="arena"]{
+  --bg:#f7f3ec; --surface:#fffdf9; --surface2:#faf6ef; --surface3:#f0e9dd;
+  --line:#e8dfd0; --line2:#d5c7b0;
+  --txt:#3a3228; --muted:#7a6e5d; --faint:#a89a85;
+  --accent:#b07d3a;
+  --ok:#5f9d5f; --warn:#cf9440; --danger:#c4603f; --na:#a89a85;
+  --sh:0 1px 2px rgba(80,60,30,.05), 0 4px 14px rgba(80,60,30,.07);
+}
+:root[data-theme="noche"]{
+  --bg:#0b1020; --surface:#131a30; --surface2:#182039; --surface3:#202a47;
+  --line:#222c4a; --line2:#32406a;
+  --txt:#e4e9f7; --muted:#8b97b8; --faint:#646f91;
+  --accent:#6366f1;
+  --ok:#34d399; --warn:#fbbf24; --danger:#f87171; --na:#6b7280;
+  --sh:0 1px 2px rgba(0,0,0,.35), 0 4px 16px rgba(0,0,0,.25);
+}
+:root[data-theme="grafito"]{
+  --bg:#141414; --surface:#1d1d1d; --surface2:#242424; --surface3:#2e2e2e;
+  --line:#2c2c2c; --line2:#3d3d3d;
+  --txt:#ececec; --muted:#9a9a9a; --faint:#6e6e6e;
+  --accent:#a1a1aa;
+  --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --na:#6b7280;
+  --sh:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.2);
+}
+/* derivados: se recalculan solos con el tema y el color elegido */
+:root{
+  --accent-soft:color-mix(in srgb, var(--accent) 14%, transparent);
+  --ok-soft:color-mix(in srgb, var(--ok) 13%, transparent);
+  --warn-soft:color-mix(in srgb, var(--warn) 13%, transparent);
+  --danger-soft:color-mix(in srgb, var(--danger) 13%, transparent);
+  --r:14px; --r-sm:9px;
+}
+:root,:root[data-theme="oscuro"],:root[data-theme="noche"],:root[data-theme="grafito"]{color-scheme:dark}
+:root[data-theme="claro"],:root[data-theme="pastel"],:root[data-theme="arena"]{color-scheme:light}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
@@ -102,7 +142,9 @@ button,input,select{font-family:inherit}
 .panel-b{padding:18px}
 
 /* ---- identity ---- */
-.idgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px}
+.idgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px 22px}
+.fld.wide{grid-column:span 2}
+@media(max-width:700px){ .fld.wide{grid-column:span 1} }
 .fld label{
   display:block; font-size:10.5px; font-weight:700; letter-spacing:.7px;
   text-transform:uppercase; color:var(--faint); margin-bottom:6px;
@@ -114,11 +156,9 @@ button,input,select{font-family:inherit}
 }
 .fld input:focus, .fld select:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
 .fld input::placeholder{color:var(--faint)}
-.dates{display:flex; gap:7px; align-items:center}
-.dates input{font-size:12.5px; padding:9px 8px}
+.dates{display:flex; gap:10px; align-items:center}
+.dates input{font-size:13px; padding:9px 10px; min-width:0; flex:1 1 0}
 .dates span{color:var(--faint); flex:none}
-input[type="date"]{color-scheme:dark}
-:root[data-theme="light"] input[type="date"]{color-scheme:light}
 
 /* ---- KPI ---- */
 .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:18px 0}
@@ -292,8 +332,39 @@ tbody tr.sec:hover td{background:var(--surface3)}
 .fire{font-size:9.5px; font-weight:700; color:#f87171; background:var(--danger-soft); padding:2px 7px; border-radius:5px; margin-left:7px; white-space:nowrap}
 
 .empty{text-align:center; padding:50px 20px; color:var(--faint); font-size:13px}
-.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:14px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:11.5px; color:var(--muted); margin-top:18px}
 .legend i{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px}
+
+/* ---- popovers (colores / opciones) ---- */
+.tools{display:flex; gap:7px; align-items:center; flex:none; position:relative}
+.pop{
+  position:absolute; right:0; top:44px; z-index:70; width:258px;
+  background:var(--surface); border:1px solid var(--line2); border-radius:13px;
+  box-shadow:0 12px 44px rgba(0,0,0,.34); padding:13px;
+}
+.pop[hidden]{display:none}
+.poph{font-size:10px; font-weight:700; letter-spacing:.9px; text-transform:uppercase; color:var(--faint); margin:2px 0 9px}
+.themes{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px}
+.thm{
+  border:1px solid var(--line); border-radius:10px; padding:8px 4px; cursor:pointer;
+  background:var(--surface2); text-align:center; font-size:10.5px; font-weight:600; color:var(--muted); transition:.14s;
+}
+.thm:hover{border-color:var(--line2); color:var(--txt)}
+.thm.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.thm .sw{display:flex; gap:3px; justify-content:center; margin-bottom:6px}
+.thm .sw i{width:12px; height:12px; border-radius:4px; display:block; border:1px solid rgba(128,128,128,.3)}
+.accents{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+.acc{width:25px; height:25px; border-radius:8px; cursor:pointer; border:2px solid transparent; padding:0}
+.acc.on{border-color:var(--txt)}
+.custom{display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--muted); gap:8px}
+.custom input{width:42px; height:27px; border:1px solid var(--line2); border-radius:7px; background:transparent; cursor:pointer; padding:1px}
+.popbtn{
+  display:block; width:100%; text-align:left; background:transparent; border:none; color:var(--txt);
+  padding:9px 10px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.popbtn:hover{background:var(--surface2)}
+.popbtn.danger{color:var(--danger)}
+.popsep{height:1px; background:var(--line); margin:7px 0}
 
 @media print{
   .appbar,.toolbar,.tabs,.iconbtn{display:none}
@@ -317,7 +388,23 @@ tbody tr.sec:hover td{background:var(--surface3)}
       <div><b>Proyectos OYM</b><span>Operaciones y Mantenimiento</span></div>
     </div>
     <nav class="gnav" id="gnav"></nav>
-    <button class="iconbtn" id="btnTheme" title="Cambiar tema">◐</button>
+    <div class="tools">
+      <button class="iconbtn" id="btnPal" title="Colores y tema">◐</button>
+      <button class="iconbtn" id="btnMenu" title="Más opciones">⋯</button>
+      <div class="pop" id="popPal" hidden>
+        <div class="poph">Tema</div>
+        <div class="themes" id="themeList"></div>
+        <div class="poph">Color principal</div>
+        <div class="accents" id="accentList"></div>
+        <label class="custom">Personalizado <input type="color" id="accentCustom"></label>
+      </div>
+      <div class="pop" id="popMenu" hidden style="width:210px">
+        <button class="popbtn" id="btnExport">Exportar a Excel (CSV)</button>
+        <button class="popbtn" id="btnPrint">Imprimir</button>
+        <div class="popsep"></div>
+        <button class="popbtn danger" id="btnReset">Reiniciar esta gerencia</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -326,7 +413,6 @@ tbody tr.sec:hover td{background:var(--surface3)}
   <div class="pagehead">
     <div>
       <h1>Documentos Proyectos OYM</h1>
-      <p>Seguimiento de proyectos de construcción y remodelación · Check List R&amp;I</p>
     </div>
     <div class="gtag"><span class="dot"></span><span id="gtagTxt">Gerencia 1</span></div>
   </div>
@@ -342,7 +428,7 @@ tbody tr.sec:hover td{background:var(--surface3)}
         <div class="fld"><label>Proyecto</label><input data-k="proyecto" placeholder="Nombre del proyecto / estaca"></div>
         <div class="fld"><label>N.º de Proyecto</label><input data-k="numero" placeholder="OYM-000"></div>
         <div class="fld"><label>Responsable (FM)</label><input data-k="fm" placeholder="Nombre del encargado"></div>
-        <div class="fld"><label>Fechas de proyecto</label>
+        <div class="fld wide"><label>Fechas de proyecto</label>
           <div class="dates">
             <input type="date" data-k="fini"><span>→</span><input type="date" data-k="ffin">
           </div>
@@ -363,33 +449,8 @@ tbody tr.sec:hover td{background:var(--surface3)}
   <!-- KPIs -->
   <div class="kpis" id="kpis"></div>
 
-  <!-- AVANCE + ALERTAS -->
-  <div class="grid2">
-    <section class="panel">
-      <div class="panel-h"><h2>Avance por fase</h2><span class="sub" id="fasesSub"></span></div>
-      <div class="panel-b" id="fases"></div>
-    </section>
-    <section class="panel">
-      <div class="panel-h"><h2>Alertas y seguimiento</h2><span class="sub" id="alertSub"></span></div>
-      <div class="panel-b" id="alerts"></div>
-    </section>
-  </div>
-
   <!-- TABS -->
   <nav class="tabs" id="tabs"></nav>
-
-  <div class="toolbar">
-    <input class="search" id="q" placeholder="Buscar tarea, entregable o documento…">
-    <button class="chip" data-f="all">Todas</button>
-    <button class="chip" data-f="Pendiente">Pendientes</button>
-    <button class="chip" data-f="En progreso">En progreso</button>
-    <button class="chip" data-f="Terminado">Terminadas</button>
-    <button class="chip" data-f="late">Atrasadas</button>
-    <button class="btn" id="btnExport">Exportar</button>
-    <button class="btn" id="btnPrint">Imprimir</button>
-    <button class="btn danger" id="btnReset">Reiniciar</button>
-    <span class="savednote" id="saved"></span>
-  </div>
 
   <div id="content"></div>
 
@@ -399,6 +460,7 @@ tbody tr.sec:hover td{background:var(--surface3)}
     <span><i style="background:var(--danger)"></i>Atrasado</span>
     <span><i style="background:var(--na)"></i>No aplica</span>
     <span>Los datos se guardan en este navegador · cada gerencia es independiente</span>
+    <span class="savednote" id="saved"></span>
   </div>
 
 </main>
@@ -589,7 +651,17 @@ const KEY="oym_dash_v2", NGER=5;
 let STATE=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}})();
 let GERS=(STATE._gers&&STATE._gers.length===NGER)?STATE._gers:["Gerencia 1","Gerencia 2","Gerencia 3","Gerencia 4","Gerencia 5"];
 let GER=(typeof STATE._ger==="number")?STATE._ger:0;
-let THEME=STATE._theme||"dark";
+const THEMES=[
+ {id:"oscuro", n:"Oscuro",  c:["#0f1318","#232a34","#3b82f6"]},
+ {id:"claro",  n:"Claro",   c:["#f4f6f9","#ffffff","#2563eb"]},
+ {id:"pastel", n:"Pastel",  c:["#f7f4fb","#f1ebf8","#8b7ad6"]},
+ {id:"arena",  n:"Arena",   c:["#f7f3ec","#f0e9dd","#b07d3a"]},
+ {id:"noche",  n:"Noche",   c:["#0b1020","#202a47","#6366f1"]},
+ {id:"grafito",n:"Grafito", c:["#141414","#2e2e2e","#a1a1aa"]}];
+const ACCENTS=["#3b82f6","#6366f1","#8b5cf6","#ec4899","#ef4444","#f59e0b","#22c55e","#14b8a6"];
+const OLD={dark:"oscuro",light:"claro"};
+let THEME=OLD[STATE._theme]||STATE._theme||"oscuro";
+let ACCENT=STATE._accent||"";
 let activeTab=STATE._tab||"inicio";
 let filter="all", query="";
 
@@ -597,7 +669,7 @@ function nk(k){return k[0]==="_"?k:("G"+GER+"|"+k)}
 function g(k,d){const v=STATE[nk(k)];return v===undefined?d:v}
 let st;
 function save(){
-  STATE._gers=GERS; STATE._ger=GER; STATE._theme=THEME; STATE._tab=activeTab;
+  STATE._gers=GERS; STATE._ger=GER; STATE._theme=THEME; STATE._accent=ACCENT; STATE._tab=activeTab;
   try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){}
   const n=document.getElementById('saved');
   n.textContent="✓ Guardado "+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
@@ -721,52 +793,9 @@ function renderKpis(){
    '<div class="kpi '+(s.pdfD===s.pdfT&&s.pdfT?'k-ok':'k-warn')+'"><div class="kl">Entregables PDF</div>'+
      '<div class="kv">'+s.pdfD+'<small>/'+s.pdfT+'</small></div><div class="kf">Documentos formales del proceso</div></div>'+
 
-   '<div class="kpi '+budCls+'"><div class="kl">Presupuesto ejecutado</div>'+budHtml+'</div>'+
-
-   '<div class="kpi '+(s.docD===s.docT?'k-ok':'k-mut')+'"><div class="kl">Expediente archivado</div>'+
-     '<div class="kv">'+s.docD+'<small>/'+s.docT+'</small></div><div class="kf">Documentos del índice OYM</div></div>';
+   '<div class="kpi '+budCls+'"><div class="kl">Presupuesto ejecutado</div>'+budHtml+'</div>';
 
   document.getElementById('etapaTxt').textContent="Etapa actual: "+etapaActual();
-}
-
-/* =================== RENDER: FASES =================== */
-function renderFases(){
-  const el=document.getElementById('fases'); el.innerHTML="";
-  PHASES.forEach((p,i)=>{
-    const s=phaseStats(p);
-    const d=document.createElement('div'); d.className="pbar";
-    d.innerHTML='<div class="pt"><b>'+(i+1)+'. '+p.label+'</b><span>'+s.done+'/'+s.total+' · '+s.pct+'%</span></div>'+
-      '<div class="track '+(s.pct===100?'t-full':s.pct===0?'t-zero':'')+'"><i style="width:'+Math.max(s.pct,2)+'%"></i></div>';
-    el.appendChild(d);
-  });
-  document.getElementById('fasesSub').textContent=etapaActual();
-}
-
-/* =================== RENDER: ALERTAS =================== */
-function renderAlerts(){
-  const el=document.getElementById('alerts'); el.innerHTML="";
-  const late=[],soon=[],noDate=[];
-  allTasks().forEach(({t,p})=>{
-    if(isLate(t))late.push({t,p}); else if(isSoon(t))soon.push({t,p});
-    else if(!isDone(t)&&!isNA(t)&&!g("df_"+t.id,""))noDate.push({t,p});
-  });
-  const add=(cls,icon,title,sub)=>{
-    const d=document.createElement('div'); d.className="alert "+cls;
-    d.innerHTML='<span class="ai">'+icon+'</span><div><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></div>';
-    el.appendChild(d);
-  };
-  late.slice(0,4).forEach(({t,p})=>add("a-dan","⚠",t.x,p.label+" · venció el "+g("df_"+t.id,"")));
-  if(late.length>4)add("a-dan","⚠","+"+(late.length-4)+" tareas atrasadas más","Filtra por «Atrasadas» para verlas todas");
-  soon.slice(0,3).forEach(({t,p})=>add("a-warn","◷",t.x,p.label+" · vence el "+g("df_"+t.id,"")));
-  const ff=parseD(g("ffin",""));
-  if(ff){const r=days(today(),ff);
-    if(r<0)add("a-dan","⚑","Plazo del proyecto vencido","La fecha de fin fue hace "+Math.abs(r)+" días");
-    else if(r<=15)add("a-warn","⚑","Cierre del proyecto próximo","Quedan "+r+" días para la fecha de fin");}
-  if(noDate.length)add("a-info","◇",noDate.length+" tareas sin fecha de finalización","Asigna fechas para activar el control de atrasos");
-  const s=stats();
-  if(s.pct===100)add("a-ok","✓","Todas las tareas completadas","El proyecto está listo para el cierre documental");
-  if(!el.children.length)add("a-ok","✓","Sin alertas","No hay tareas atrasadas ni vencimientos próximos");
-  document.getElementById('alertSub').textContent=late.length?(late.length+" críticas"):"Al día";
 }
 
 /* =================== RENDER: TABS =================== */
@@ -780,12 +809,6 @@ function renderTabs(){
     b.onclick=()=>{activeTab=p.id;save();renderTabs();renderContent()};
     el.appendChild(b);
   });
-  const s=stats();
-  const b=document.createElement('button');
-  b.className="tab"+(activeTab==="docs"?" active":"");
-  b.innerHTML='Expediente<span class="cnt'+(s.docD===s.docT?' full':'')+'">'+s.docD+'/'+s.docT+'</span>';
-  b.onclick=()=>{activeTab="docs";save();renderTabs();renderContent()};
-  el.appendChild(b);
 }
 
 /* =================== RENDER: CONTENIDO =================== */
@@ -862,7 +885,7 @@ function taskEl(t){
   row.append(cb,b); return row;
 }
 function setStatus(t,v){set("st_"+t.id,v);renderContent();refreshHead()}
-function refreshHead(){renderGnav();renderKpis();renderFases();renderAlerts();renderTabs()}
+function refreshHead(){renderGnav();renderKpis();renderTabs()}
 
 function renderDocs(c){
   const s=stats();
@@ -909,15 +932,10 @@ function renderDocs(c){
 function loadFields(){document.querySelectorAll('[data-k]').forEach(i=>i.value=g(i.dataset.k,""))}
 document.querySelectorAll('[data-k]').forEach(i=>{
   const ev=i.tagName==="SELECT"?"change":"input";
-  i.addEventListener(ev,()=>{set(i.dataset.k,i.value);renderKpis();renderAlerts()});
+  i.addEventListener(ev,()=>{set(i.dataset.k,i.value);renderKpis()});
 });
 
-/* =================== BARRA DE HERRAMIENTAS =================== */
-document.getElementById('q').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();renderContent()});
-document.querySelectorAll('.chip').forEach(c=>{
-  if(c.dataset.f==="all")c.classList.add('on');
-  c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');filter=c.dataset.f;renderContent()};
-});
+/* =================== OPCIONES =================== */
 document.getElementById('btnPrint').onclick=()=>window.print();
 document.getElementById('btnExport').onclick=()=>{
   const rows=[["Gerencia","Fase","Grupo","Tarea","Estado","Responsable","Inicio","Fin","Notas"]];
@@ -932,14 +950,56 @@ document.getElementById('btnReset').onclick=()=>{
   Object.keys(STATE).forEach(k=>{if(k.indexOf("G"+GER+"|")===0)delete STATE[k]});
   save(); refreshAll();
 };
-document.getElementById('btnTheme').onclick=()=>{
-  THEME=THEME==="dark"?"light":"dark";
-  document.documentElement.setAttribute('data-theme',THEME); save();
-};
+/* =================== TEMA Y COLORES =================== */
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',THEME);
+  if(ACCENT)document.documentElement.style.setProperty('--accent',ACCENT);
+  else document.documentElement.style.removeProperty('--accent');
+  renderPalette();
+}
+function renderPalette(){
+  const tl=document.getElementById('themeList'); tl.innerHTML="";
+  THEMES.forEach(t=>{
+    const b=document.createElement('div');
+    b.className="thm"+(t.id===THEME?" on":"");
+    b.innerHTML='<span class="sw">'+t.c.map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>'+t.n;
+    b.onclick=()=>{THEME=t.id;save();applyTheme();renderKpis()};
+    tl.appendChild(b);
+  });
+  const al=document.getElementById('accentList'); al.innerHTML="";
+  ACCENTS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className="acc"+(ACCENT===c?" on":""); b.style.background=c; b.title=c;
+    b.onclick=()=>{ACCENT=c;save();applyTheme();renderKpis()};
+    al.appendChild(b);
+  });
+  const rb=document.createElement('button');
+  rb.className="acc"+(ACCENT?"":" on"); rb.title="Color propio del tema";
+  rb.style.cssText="background:transparent;border:2px dashed var(--line2);color:var(--faint);font-size:13px;line-height:1";
+  rb.textContent="↺";
+  rb.onclick=()=>{ACCENT="";save();applyTheme();renderKpis()};
+  al.appendChild(rb);
+  const cc=document.getElementById('accentCustom');
+  cc.value=ACCENT||getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||"#3b82f6";
+  cc.oninput=()=>{ACCENT=cc.value;save();applyTheme();renderKpis()};
+}
+/* abrir / cerrar popovers */
+function togglePop(id){
+  ['popPal','popMenu'].forEach(p=>{
+    const el=document.getElementById(p);
+    if(p===id)el.hidden=!el.hidden; else el.hidden=true;
+  });
+}
+document.getElementById('btnPal').onclick=e=>{e.stopPropagation();togglePop('popPal')};
+document.getElementById('btnMenu').onclick=e=>{e.stopPropagation();togglePop('popMenu')};
+document.querySelectorAll('.pop').forEach(p=>p.addEventListener('click',e=>e.stopPropagation()));
+document.addEventListener('click',()=>togglePop(null));
+document.addEventListener('keydown',e=>{if(e.key==="Escape")togglePop(null)});
 
 /* =================== INIT =================== */
-function refreshAll(){loadFields();renderGnav();renderKpis();renderFases();renderAlerts();renderTabs();renderContent()}
-document.documentElement.setAttribute('data-theme',THEME);
+function refreshAll(){loadFields();renderGnav();renderKpis();renderTabs();renderContent()}
+if(!PHASES.some(p=>p.id===activeTab))activeTab="inicio";
+applyTheme();
 refreshAll();
 </script>
 </body>
