@@ -495,7 +495,7 @@ const PHASES=[
   {x:"Realizar revisiones del proyecto"},
   {x:"Medir niveles de calidad"},
   {x:"Informe Semanal de Calidad",pdf:1,hint:"ref. OYM023"}]},
- {h:"Mejora continua y partes interesadas",t:[
+ {h:"",t:[
   {x:"Facilitar la mejora continua"},
   {x:"Supervisar satisfacción"},
   {x:"Resolver problemas"}]},
@@ -797,9 +797,9 @@ function renderContent(){
     const done=gr.t.filter(isDone).length, tot=gr.t.filter(t=>!isNA(t)).length;
     const pct=tot?Math.round(done/tot*100):0;
     const el=document.createElement('div'); el.className="group";
-    el.innerHTML='<div class="ghead"><h3>'+esc(gr.h)+'</h3>'+
+    el.innerHTML=gr.h?('<div class="ghead"><h3>'+esc(gr.h)+'</h3>'+
       '<span class="gc'+(pct===100?' full':'')+'">'+done+'/'+tot+'</span>'+
-      '<span class="gtrack"><i style="width:'+pct+'%"></i></span></div>';
+      '<span class="gtrack"><i style="width:'+pct+'%"></i></span></div>'):'';
     vis.forEach(t=>el.appendChild(taskEl(t)));
     c.appendChild(el);
   });
