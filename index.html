@@ -494,9 +494,12 @@ const PHASES=[
   {x:"Realizar inspecciones y auditorías"},
   {x:"Realizar revisiones del proyecto"},
   {x:"Medir niveles de calidad"},
-  {x:"Informe Semanal de Calidad",pdf:1,hint:"ref. OYM023"}]},
- {h:"",t:[
-  {x:"Facilitar la mejora continua"},
+  {x:"Informe Semanal de Calidad",pdf:1,hint:"ref. OYM023"},
+  {x:"Facilitar la mejora continua"}]},
+ {h:"Generar informes de rendimiento",t:[
+  {x:"Informar del estado semanal"},
+  {x:"Informar del estado mensual"}]},
+ {h:"Administrar partes interesadas",t:[
   {x:"Supervisar satisfacción"},
   {x:"Resolver problemas"}]},
  {h:"Supervisión y control de riesgos",t:[{x:"Administrar riesgos"}]},
@@ -571,7 +574,17 @@ const DOCS=[
  {c:"OYM015.4",d:"Cronograma de Obra",e:"PDF"},
  {c:"OYM015.5",d:"Análisis de Precios Unitarios",e:"PDF"}];
 
-PHASES.forEach(p=>p.groups.forEach((gr,gi)=>gr.t.forEach((t,ti)=>t.id=p.id+"-"+gi+"-"+ti)));
+/* IDs estables derivados del texto: reordenar o reagrupar tareas no borra lo guardado */
+const slug=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,44);
+PHASES.forEach(p=>{
+  const seen={};
+  p.groups.forEach(gr=>gr.t.forEach(t=>{
+    let k=p.id+"-"+slug(t.x);
+    if(seen[k]){seen[k]++;k=k+"-"+seen[k]}else{seen[k]=1}
+    t.id=k;
+  }));
+});
 
 /* =================== ESTADO =================== */
 const KEY="oym_dash_v2", NGER=5;
