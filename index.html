@@ -4,586 +4,933 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard Proyectos OYM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#1b1d21; --bg2:#232529; --panel:#26282d; --panel2:#2d3036;
-    --line:#3a3d44; --line2:#464a52;
-    --txt:#e9eaec; --muted:#9aa0aa; --faint:#6f757f;
-    --accent:#6ea8fe; --accent2:#4b84e8;
-    --ok:#53c08a; --prog:#e0b64b; --na:#8a8f99; --pend:#6f757f;
-    --radius:12px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{
-    background:var(--bg); color:var(--txt);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    font-size:14px; line-height:1.45;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1080px; margin:0 auto; padding:24px 16px 80px}
+:root{
+  --bg:#0f1318; --surface:#161b22; --surface2:#1c222b; --surface3:#232a34;
+  --line:#242b35; --line2:#323b47;
+  --txt:#e8ecf1; --muted:#8e99a8; --faint:#656f7d;
+  --accent:#3b82f6; --accent-soft:rgba(59,130,246,.14);
+  --ok:#22c55e; --ok-soft:rgba(34,197,94,.13);
+  --warn:#f59e0b; --warn-soft:rgba(245,158,11,.13);
+  --danger:#ef4444; --danger-soft:rgba(239,68,68,.13);
+  --na:#6b7280;
+  --r:14px; --r-sm:9px;
+  --sh:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.18);
+}
+:root[data-theme="light"]{
+  --bg:#f4f6f9; --surface:#ffffff; --surface2:#f8fafc; --surface3:#eef2f7;
+  --line:#e2e8f0; --line2:#cbd5e1;
+  --txt:#0f172a; --muted:#64748b; --faint:#94a3b8;
+  --accent-soft:rgba(59,130,246,.1);
+  --sh:0 1px 2px rgba(15,23,42,.05), 0 4px 14px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--txt);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+button,input,select{font-family:inherit}
 
-  /* ---- header ---- */
-  .top{
-    text-align:center; padding:22px 16px 18px;
-    border-bottom:1px solid var(--line);
-    margin-bottom:22px;
-  }
-  .top h1{
-    margin:0; font-size:26px; letter-spacing:.5px; font-weight:800;
-    color:#9db4d6;
-  }
-  .top p{margin:6px 0 0; color:var(--muted); font-size:13px}
+/* ============ APP BAR ============ */
+.appbar{
+  position:sticky; top:0; z-index:50;
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.appbar-in{max-width:1240px; margin:0 auto; padding:11px 20px; display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:11px; flex:none}
+.logo{
+  width:34px; height:34px; border-radius:10px; flex:none;
+  background:linear-gradient(145deg,#3b82f6,#1d4ed8);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:800; font-size:13px; letter-spacing:-.3px;
+  box-shadow:0 2px 10px rgba(59,130,246,.35);
+}
+.brand b{font-size:14px; font-weight:700; letter-spacing:-.2px; display:block; line-height:1.2}
+.brand span{font-size:11px; color:var(--muted); display:block}
 
-  .idrow{
-    display:flex; gap:28px; flex-wrap:wrap;
-    padding:0 2px 22px; border-bottom:1px solid var(--line); margin-bottom:22px;
-  }
-  .idfield{flex:1 1 320px; min-width:240px}
-  .idfield label{display:block; font-weight:700; margin-bottom:6px; font-size:13px}
-  .idfield input{
-    width:100%; background:transparent; border:none; border-bottom:1px solid var(--line2);
-    color:var(--txt); font-size:15px; padding:6px 2px; outline:none;
-  }
-  .idfield input:focus{border-color:var(--accent)}
+.gnav{display:flex; gap:6px; flex-wrap:wrap; align-items:center; flex:1 1 auto}
+.gnav .nlbl{font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--faint); margin-right:2px}
+.gbtn{
+  display:flex; align-items:center; gap:8px; cursor:pointer;
+  background:var(--surface2); border:1px solid var(--line); border-radius:10px;
+  padding:6px 11px 6px 7px; color:var(--muted); font-size:12.5px; font-weight:600; transition:.14s;
+}
+.gbtn:hover{color:var(--txt); border-color:var(--line2); transform:translateY(-1px)}
+.gbtn.active{
+  background:linear-gradient(160deg,#3b82f6,#2563eb); border-color:#2563eb; color:#fff;
+  box-shadow:0 2px 12px rgba(59,130,246,.4);
+}
+.gbtn .num{
+  display:inline-flex; align-items:center; justify-content:center; width:21px; height:21px; flex:none;
+  border-radius:6px; background:var(--surface3); font-size:11px; font-weight:800; color:var(--accent);
+}
+.gbtn.active .num{background:rgba(255,255,255,.25); color:#fff}
+.gbtn .gp{font-size:10.5px; font-weight:700; opacity:.75; font-variant-numeric:tabular-nums}
+.iconbtn{
+  background:var(--surface2); border:1px solid var(--line); color:var(--muted);
+  width:34px; height:34px; border-radius:9px; cursor:pointer; font-size:15px; flex:none;
+  display:flex; align-items:center; justify-content:center; transition:.14s;
+}
+.iconbtn:hover{color:var(--txt); border-color:var(--line2)}
 
-  /* ---- dashboard cards ---- */
-  .dash{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px}
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:16px 18px;
-  }
-  .card .lbl{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px}
-  .card input{
-    width:100%; background:var(--bg2); border:1px solid var(--line2); border-radius:8px;
-    color:var(--txt); font-size:14px; padding:8px 10px; outline:none;
-  }
-  .card input:focus{border-color:var(--accent)}
-  .datewrap{display:flex; gap:8px; align-items:center}
-  .datewrap input{font-size:13px}
-  .datewrap span{color:var(--faint)}
+/* ============ LAYOUT ============ */
+.wrap{max-width:1240px; margin:0 auto; padding:26px 20px 90px}
+.pagehead{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px}
+.pagehead h1{margin:0; font-size:23px; font-weight:800; letter-spacing:-.5px}
+.pagehead p{margin:4px 0 0; color:var(--muted); font-size:13px}
+.gtag{
+  display:inline-flex; align-items:center; gap:7px; background:var(--accent-soft);
+  border:1px solid rgba(59,130,246,.3); color:var(--accent);
+  padding:6px 13px; border-radius:30px; font-size:12px; font-weight:700;
+}
+.gtag .dot{width:7px; height:7px; border-radius:50%; background:var(--accent)}
 
-  .progwrap{display:flex; align-items:center; gap:16px}
-  .ring{position:relative; width:78px; height:78px; flex:none}
-  .ring svg{transform:rotate(-90deg)}
-  .ring .pct{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:18px; font-weight:800;
-  }
-  .progmeta{font-size:12px; color:var(--muted); line-height:1.6}
-  .progmeta b{color:var(--txt); font-weight:700}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--sh)}
+.panel-h{
+  padding:14px 18px; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.panel-h h2{margin:0; font-size:13px; font-weight:700; letter-spacing:.2px}
+.panel-h .sub{font-size:11.5px; color:var(--muted); font-weight:500}
+.panel-b{padding:18px}
 
-  /* ---- tabs ---- */
-  .tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px}
-  .tab{
-    position:relative; background:var(--panel); border:1px solid var(--line);
-    color:var(--muted); padding:9px 14px 10px; border-radius:10px; cursor:pointer;
-    font-size:13px; font-weight:600; white-space:nowrap; transition:.12s;
-  }
-  .tab:hover{color:var(--txt); border-color:var(--line2)}
-  .tab.active{background:var(--accent2); border-color:var(--accent2); color:#fff}
-  .tab .mini{
-    display:block; height:3px; border-radius:3px; margin-top:7px;
-    background:var(--line2); overflow:hidden;
-  }
-  .tab .mini i{display:block; height:100%; background:var(--ok); width:0}
-  .tab.active .mini{background:rgba(255,255,255,.3)}
-  .tab.active .mini i{background:#fff}
+/* ---- identity ---- */
+.idgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px}
+.fld label{
+  display:block; font-size:10.5px; font-weight:700; letter-spacing:.7px;
+  text-transform:uppercase; color:var(--faint); margin-bottom:6px;
+}
+.fld input, .fld select{
+  width:100%; background:var(--surface2); border:1px solid var(--line);
+  color:var(--txt); border-radius:var(--r-sm); padding:9px 11px; font-size:13.5px;
+  outline:none; transition:.14s;
+}
+.fld input:focus, .fld select:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.fld input::placeholder{color:var(--faint)}
+.dates{display:flex; gap:7px; align-items:center}
+.dates input{font-size:12.5px; padding:9px 8px}
+.dates span{color:var(--faint); flex:none}
+input[type="date"]{color-scheme:dark}
+:root[data-theme="light"] input[type="date"]{color-scheme:light}
 
-  .planlabel{font-size:11px; letter-spacing:2px; color:var(--faint); text-transform:uppercase; margin:0 0 4px}
-  .phasehead{font-size:22px; font-weight:800; margin:0 0 18px}
+/* ---- KPI ---- */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:18px 0}
+.kpi{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 17px; box-shadow:var(--sh); position:relative; overflow:hidden;
+}
+.kpi::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent)}
+.kpi.k-ok::before{background:var(--ok)} .kpi.k-warn::before{background:var(--warn)}
+.kpi.k-dan::before{background:var(--danger)} .kpi.k-mut::before{background:var(--na)}
+.kpi .kl{font-size:10.5px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--faint); margin-bottom:9px}
+.kpi .kv{font-size:26px; font-weight:800; letter-spacing:-1px; font-variant-numeric:tabular-nums; line-height:1}
+.kpi .kv small{font-size:14px; font-weight:600; color:var(--muted); letter-spacing:0}
+.kpi .kf{font-size:11.5px; color:var(--muted); margin-top:7px}
+.kpi.k-ok .kv{color:var(--ok)} .kpi.k-warn .kv{color:var(--warn)} .kpi.k-dan .kv{color:var(--danger)}
 
-  /* ---- groups & tasks ---- */
-  .group{margin-bottom:22px}
-  .group>h3{
-    font-size:15px; font-weight:700; margin:0 0 10px; color:#cfd4dc;
-    display:flex; align-items:center; gap:10px;
-  }
-  .group>h3 .gcount{font-size:11px; color:var(--faint); font-weight:600}
+.kpi-ring{display:flex; align-items:center; gap:15px}
+.ring{position:relative; width:72px; height:72px; flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800; letter-spacing:-.5px}
 
-  .task{
-    background:var(--panel); border:1px solid var(--line); border-radius:10px;
-    padding:12px 14px; margin-bottom:9px;
-    display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start;
-  }
-  .task.done{border-color:rgba(83,192,138,.4); background:rgba(83,192,138,.06)}
-  .cb{
-    appearance:none; -webkit-appearance:none; width:20px; height:20px; margin:2px 0 0;
-    border:2px solid var(--line2); border-radius:6px; cursor:pointer; position:relative; flex:none;
-    background:var(--bg2);
-  }
-  .cb:checked{background:var(--ok); border-color:var(--ok)}
-  .cb:checked::after{
-    content:""; position:absolute; left:6px; top:2px; width:5px; height:10px;
-    border:solid #16261d; border-width:0 2px 2px 0; transform:rotate(45deg);
-  }
-  .tbody{min-width:0}
-  .ttext{font-size:14px; margin-bottom:2px}
-  .task.done .ttext{color:var(--muted); text-decoration:line-through}
-  .thint{font-size:12px; color:var(--faint); margin-bottom:9px}
-  .badge{
-    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.4px;
-    padding:2px 7px; border-radius:20px; margin-left:8px; vertical-align:middle;
-    border:1px solid var(--line2); color:var(--muted);
-  }
-  .badge.pdf{color:#e78; border-color:rgba(238,119,136,.4)}
-  .badge.apl{color:#cba; border-color:rgba(200,180,160,.35)}
+/* ---- two col ---- */
+.grid2{display:grid; grid-template-columns:1.25fr 1fr; gap:16px; margin-bottom:20px}
+@media(max-width:900px){ .grid2{grid-template-columns:1fr} }
 
-  .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-  .sel{
-    background:var(--bg2); border:1px solid var(--line2); color:var(--txt);
-    border-radius:8px; padding:6px 9px; font-size:12px; outline:none; cursor:pointer;
-  }
-  .sel.st-prog{color:var(--prog); border-color:rgba(224,182,75,.5)}
-  .sel.st-done{color:var(--ok); border-color:rgba(83,192,138,.5)}
-  .sel.st-na{color:var(--na)}
-  .dt{
-    background:var(--bg2); border:1px solid var(--line2); color:var(--txt);
-    border-radius:8px; padding:6px 9px; font-size:12px; outline:none; color-scheme:dark;
-  }
-  .dt:focus,.sel:focus{border-color:var(--accent)}
-  .cmt{
-    flex:1 1 180px; min-width:140px; background:var(--bg2); border:1px solid var(--line2);
-    color:var(--txt); border-radius:8px; padding:6px 9px; font-size:12px; outline:none;
-  }
-  .cmt:focus{border-color:var(--accent)}
-  .lblmini{font-size:10px; color:var(--faint); align-self:center}
+.pbar{margin-bottom:15px}
+.pbar:last-child{margin-bottom:0}
+.pbar .pt{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12.5px}
+.pbar .pt b{font-weight:600}
+.pbar .pt span{color:var(--muted); font-size:11.5px; font-variant-numeric:tabular-nums}
+.track{height:7px; background:var(--surface3); border-radius:10px; overflow:hidden}
+.track i{display:block; height:100%; border-radius:10px; background:linear-gradient(90deg,#3b82f6,#22c55e); transition:width .4s ease}
+.track.t-full i{background:var(--ok)}
+.track.t-zero i{background:var(--line2)}
 
-  /* ---- documentos table ---- */
-  table{width:100%; border-collapse:collapse; font-size:13px}
-  thead th{
-    text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase;
-    letter-spacing:.5px; padding:8px 10px; border-bottom:1px solid var(--line2);
-  }
-  tbody td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:middle}
-  tbody tr.sec td{background:var(--bg2); font-weight:700; color:#cfd4dc; letter-spacing:.3px}
-  td .code{font-family:ui-monospace,Menlo,monospace; color:var(--accent); font-size:12px}
-  td .fmt{font-size:10px; font-weight:700; color:var(--faint); border:1px solid var(--line2); padding:1px 6px; border-radius:6px}
-  td .fire{font-size:10px; color:#e78; margin-left:6px}
+/* ---- alerts ---- */
+.alert{
+  display:flex; gap:11px; padding:11px 13px; border-radius:var(--r-sm);
+  margin-bottom:9px; font-size:12.5px; border:1px solid transparent; align-items:flex-start;
+}
+.alert:last-child{margin-bottom:0}
+.alert .ai{font-size:14px; line-height:1.2; flex:none}
+.alert b{display:block; font-weight:600; margin-bottom:1px}
+.alert small{color:var(--muted); font-size:11.5px}
+.a-dan{background:var(--danger-soft); border-color:rgba(239,68,68,.25)}
+.a-dan b{color:var(--danger)}
+.a-warn{background:var(--warn-soft); border-color:rgba(245,158,11,.25)}
+.a-warn b{color:var(--warn)}
+.a-ok{background:var(--ok-soft); border-color:rgba(34,197,94,.22)}
+.a-ok b{color:var(--ok)}
+.a-info{background:var(--surface2); border-color:var(--line)}
 
-  .toolbar{display:flex; gap:10px; justify-content:flex-end; margin-bottom:18px; flex-wrap:wrap}
-  .btn{
-    background:var(--panel2); border:1px solid var(--line2); color:var(--txt);
-    padding:8px 14px; border-radius:9px; font-size:12px; font-weight:600; cursor:pointer;
-  }
-  .btn:hover{border-color:var(--accent)}
-  .btn.danger:hover{border-color:#e78; color:#e78}
-  .saved{font-size:11px; color:var(--faint); align-self:center}
+/* ---- tabs ---- */
+.tabs{display:flex; gap:5px; flex-wrap:wrap; margin-bottom:16px; border-bottom:1px solid var(--line); padding-bottom:0}
+.tab{
+  position:relative; background:transparent; border:none; border-bottom:2px solid transparent;
+  color:var(--muted); padding:10px 15px 11px; cursor:pointer;
+  font-size:13px; font-weight:600; white-space:nowrap; transition:.14s;
+  display:flex; align-items:center; gap:8px;
+}
+.tab:hover{color:var(--txt)}
+.tab.active{color:var(--accent); border-bottom-color:var(--accent)}
+.tab .cnt{
+  font-size:10.5px; font-weight:700; background:var(--surface3); color:var(--muted);
+  padding:2px 7px; border-radius:20px; font-variant-numeric:tabular-nums;
+}
+.tab.active .cnt{background:var(--accent-soft); color:var(--accent)}
+.tab .cnt.full{background:var(--ok-soft); color:var(--ok)}
 
-  @media(max-width:720px){
-    .dash{grid-template-columns:1fr}
-    .task{grid-template-columns:22px 1fr}
-  }
+/* ---- toolbar ---- */
+.toolbar{display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-bottom:18px}
+.search{
+  flex:1 1 220px; min-width:160px; background:var(--surface); border:1px solid var(--line);
+  color:var(--txt); border-radius:var(--r-sm); padding:9px 12px; font-size:13px; outline:none;
+}
+.search:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.btn{
+  background:var(--surface); border:1px solid var(--line); color:var(--txt);
+  padding:9px 14px; border-radius:var(--r-sm); font-size:12.5px; font-weight:600; cursor:pointer; transition:.14s;
+}
+.btn:hover{border-color:var(--line2); background:var(--surface2)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.primary:hover{background:#2563eb}
+.btn.danger:hover{border-color:var(--danger); color:var(--danger)}
+.chip{
+  background:var(--surface); border:1px solid var(--line); color:var(--muted);
+  padding:8px 13px; border-radius:30px; font-size:12px; font-weight:600; cursor:pointer; transition:.14s;
+}
+.chip:hover{color:var(--txt)}
+.chip.on{background:var(--accent-soft); border-color:rgba(59,130,246,.35); color:var(--accent)}
+.savednote{font-size:11px; color:var(--faint); margin-left:auto}
+
+/* ---- phase / groups ---- */
+.phase-head{margin-bottom:20px}
+.phase-head .pl{font-size:10.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--faint); font-weight:700}
+.phase-head h2{margin:5px 0 0; font-size:21px; font-weight:800; letter-spacing:-.5px}
+
+.group{margin-bottom:20px}
+.ghead{
+  display:flex; align-items:center; gap:11px; margin-bottom:11px;
+  padding-bottom:9px; border-bottom:1px solid var(--line);
+}
+.ghead h3{margin:0; font-size:14px; font-weight:700; letter-spacing:-.1px}
+.ghead .gc{
+  font-size:10.5px; font-weight:700; color:var(--muted); background:var(--surface3);
+  padding:2px 8px; border-radius:20px; font-variant-numeric:tabular-nums;
+}
+.ghead .gc.full{background:var(--ok-soft); color:var(--ok)}
+.ghead .gtrack{flex:1; max-width:110px; height:5px; background:var(--surface3); border-radius:10px; overflow:hidden; margin-left:auto}
+.ghead .gtrack i{display:block; height:100%; background:var(--ok); border-radius:10px}
+
+/* ---- task ---- */
+.task{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:13px 15px; margin-bottom:8px; display:flex; gap:13px; align-items:flex-start;
+  transition:.14s; box-shadow:var(--sh);
+}
+.task:hover{border-color:var(--line2)}
+.task.s-done{border-left:3px solid var(--ok); background:linear-gradient(90deg,var(--ok-soft),transparent 55%)}
+.task.s-prog{border-left:3px solid var(--warn)}
+.task.s-late{border-left:3px solid var(--danger); background:linear-gradient(90deg,var(--danger-soft),transparent 55%)}
+.task.s-na{opacity:.5}
+.cb{
+  appearance:none; -webkit-appearance:none; width:19px; height:19px; margin:2px 0 0; flex:none;
+  border:2px solid var(--line2); border-radius:6px; cursor:pointer; position:relative; background:var(--surface2);
+  transition:.14s;
+}
+.cb:hover{border-color:var(--ok)}
+.cb:checked{background:var(--ok); border-color:var(--ok)}
+.cb:checked::after{content:""; position:absolute; left:5px; top:1px; width:5px; height:10px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg)}
+.tb{flex:1; min-width:0}
+.tt{font-size:13.5px; font-weight:500; margin-bottom:2px}
+.task.s-done .tt{color:var(--muted); text-decoration:line-through}
+.th{font-size:11.5px; color:var(--faint); margin-bottom:10px; line-height:1.45}
+.tag{
+  display:inline-flex; align-items:center; font-size:9.5px; font-weight:700; letter-spacing:.4px;
+  padding:2px 7px; border-radius:5px; margin-left:7px; vertical-align:middle; text-transform:uppercase;
+}
+.tag.pdf{background:var(--danger-soft); color:#f87171}
+.tag.apl{background:var(--warn-soft); color:var(--warn)}
+.tag.late{background:var(--danger); color:#fff}
+.tag.soon{background:var(--warn); color:#111}
+
+.ctr{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
+.sel, .dt, .mini{
+  background:var(--surface2); border:1px solid var(--line); color:var(--txt);
+  border-radius:7px; padding:6px 9px; font-size:11.5px; outline:none; transition:.14s;
+}
+.sel{cursor:pointer; font-weight:600}
+.sel:focus,.dt:focus,.mini:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.sel.v-prog{color:var(--warn); border-color:rgba(245,158,11,.4); background:var(--warn-soft)}
+.sel.v-done{color:var(--ok); border-color:rgba(34,197,94,.4); background:var(--ok-soft)}
+.sel.v-na{color:var(--na)}
+.mini.resp{width:130px}
+.mini.note{flex:1 1 170px; min-width:130px}
+.arw{color:var(--faint); font-size:11px}
+
+/* ---- table ---- */
+.tblwrap{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13px}
+thead th{
+  text-align:left; color:var(--faint); font-size:10.5px; text-transform:uppercase;
+  letter-spacing:.7px; padding:10px 12px; border-bottom:1px solid var(--line2); font-weight:700; white-space:nowrap;
+}
+tbody td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:middle}
+tbody tr:hover{background:var(--surface2)}
+tbody tr.sec td{background:var(--surface3); font-weight:700; font-size:11.5px; letter-spacing:.5px; text-transform:uppercase; color:var(--muted)}
+tbody tr.sec:hover td{background:var(--surface3)}
+.code{font-family:ui-monospace,'SF Mono',Menlo,monospace; color:var(--accent); font-size:11.5px; font-weight:600}
+.fmt{font-size:9.5px; font-weight:700; color:var(--muted); border:1px solid var(--line2); padding:2px 7px; border-radius:5px; white-space:nowrap}
+.fire{font-size:9.5px; font-weight:700; color:#f87171; background:var(--danger-soft); padding:2px 7px; border-radius:5px; margin-left:7px; white-space:nowrap}
+
+.empty{text-align:center; padding:50px 20px; color:var(--faint); font-size:13px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:14px}
+.legend i{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px}
+
+@media print{
+  .appbar,.toolbar,.tabs,.iconbtn{display:none}
+  body{background:#fff; color:#000}
+  .panel,.task,.kpi{break-inside:avoid; box-shadow:none}
+}
+@media(max-width:640px){
+  .appbar-in{padding:10px 14px; gap:12px}
+  .wrap{padding:20px 14px 70px}
+  .mini.resp{width:100%}
+  .pagehead h1{font-size:19px}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="top">
-    <h1>DOCUMENTOS PROYECTOS OYM</h1>
-    <p>Dashboard de seguimiento de proyectos · Operaciones y Mantenimiento</p>
-  </div>
-
-  <div class="idrow">
-    <div class="idfield"><label>Proyecto:</label><input id="f_proyecto" data-k="proyecto" placeholder="Nombre del proyecto / estaca"></div>
-    <div class="idfield"><label>Número de Proyecto:</label><input id="f_numero" data-k="numero" placeholder="OYM-000"></div>
-  </div>
-
-  <div class="dash">
-    <div class="card">
-      <div class="lbl">Nombre del proyecto</div>
-      <input id="d_nombre" data-k="nombre" placeholder="Ej. Capilla Estaca Norte">
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <div class="logo">OYM</div>
+      <div><b>Proyectos OYM</b><span>Operaciones y Mantenimiento</span></div>
     </div>
-    <div class="card">
-      <div class="lbl">Fechas de proyecto</div>
-      <div class="datewrap">
-        <input type="date" id="d_ini" data-k="fini" style="color-scheme:dark">
-        <span>→</span>
-        <input type="date" id="d_fin" data-k="ffin" style="color-scheme:dark">
+    <nav class="gnav" id="gnav"></nav>
+    <button class="iconbtn" id="btnTheme" title="Cambiar tema">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="pagehead">
+    <div>
+      <h1>Documentos Proyectos OYM</h1>
+      <p>Seguimiento de proyectos de construcción y remodelación · Check List R&amp;I</p>
+    </div>
+    <div class="gtag"><span class="dot"></span><span id="gtagTxt">Gerencia 1</span></div>
+  </div>
+
+  <!-- IDENTIDAD -->
+  <section class="panel" style="margin-bottom:18px">
+    <div class="panel-h">
+      <h2>Información del proyecto</h2>
+      <span class="sub" id="etapaTxt"></span>
+    </div>
+    <div class="panel-b">
+      <div class="idgrid">
+        <div class="fld"><label>Proyecto</label><input data-k="proyecto" placeholder="Nombre del proyecto / estaca"></div>
+        <div class="fld"><label>N.º de Proyecto</label><input data-k="numero" placeholder="OYM-000"></div>
+        <div class="fld"><label>Responsable (FM)</label><input data-k="fm" placeholder="Nombre del encargado"></div>
+        <div class="fld"><label>Contratista</label><input data-k="contratista" placeholder="Empresa adjudicada"></div>
+        <div class="fld"><label>Fechas de proyecto</label>
+          <div class="dates">
+            <input type="date" data-k="fini"><span>→</span><input type="date" data-k="ffin">
+          </div>
+        </div>
+        <div class="fld"><label>Presupuesto aprobado</label><input data-k="presu" type="number" min="0" step="100" placeholder="0.00"></div>
+        <div class="fld"><label>Ejecutado a la fecha</label><input data-k="ejec" type="number" min="0" step="100" placeholder="0.00"></div>
+        <div class="fld"><label>Estado general</label>
+          <select data-k="estado">
+            <option value="">— Seleccionar —</option>
+            <option>Planificado</option><option>En ejecución</option>
+            <option>En pausa</option><option>Terminado</option><option>Cancelado</option>
+          </select>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="lbl">Progreso</div>
-      <div class="progwrap">
-        <div class="ring">
-          <svg width="78" height="78">
-            <circle cx="39" cy="39" r="32" stroke="#3a3d44" stroke-width="8" fill="none"></circle>
-            <circle id="ringfg" cx="39" cy="39" r="32" stroke="#53c08a" stroke-width="8" fill="none"
-              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201"></circle>
-          </svg>
-          <div class="pct" id="pctTxt">0%</div>
-        </div>
-        <div class="progmeta">
-          <div><b id="mDone">0</b> terminadas</div>
-          <div><b id="mProg">0</b> en progreso</div>
-          <div><b id="mTotal">0</b> aplicables</div>
-        </div>
-      </div>
-    </div>
+  </section>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- AVANCE + ALERTAS -->
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-h"><h2>Avance por fase</h2><span class="sub" id="fasesSub"></span></div>
+      <div class="panel-b" id="fases"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-h"><h2>Alertas y seguimiento</h2><span class="sub" id="alertSub"></span></div>
+      <div class="panel-b" id="alerts"></div>
+    </section>
   </div>
 
-  <div class="tabs" id="tabs"></div>
+  <!-- TABS -->
+  <nav class="tabs" id="tabs"></nav>
 
   <div class="toolbar">
-    <span class="saved" id="savedNote"></span>
-    <button class="btn" id="btnExport">Exportar JSON</button>
+    <input class="search" id="q" placeholder="Buscar tarea, entregable o documento…">
+    <button class="chip" data-f="all">Todas</button>
+    <button class="chip" data-f="Pendiente">Pendientes</button>
+    <button class="chip" data-f="En progreso">En progreso</button>
+    <button class="chip" data-f="Terminado">Terminadas</button>
+    <button class="chip" data-f="late">Atrasadas</button>
+    <button class="btn" id="btnExport">Exportar</button>
+    <button class="btn" id="btnPrint">Imprimir</button>
     <button class="btn danger" id="btnReset">Reiniciar</button>
+    <span class="savednote" id="saved"></span>
   </div>
 
   <div id="content"></div>
 
-</div>
+  <div class="legend">
+    <span><i style="background:var(--ok)"></i>Terminado</span>
+    <span><i style="background:var(--warn)"></i>En progreso</span>
+    <span><i style="background:var(--danger)"></i>Atrasado</span>
+    <span><i style="background:var(--na)"></i>No aplica</span>
+    <span>Los datos se guardan en este navegador · cada gerencia es independiente</span>
+  </div>
+
+</main>
 
 <script>
-/* ============ DATA MODEL ============ */
-const PHASES = [
- { id:"inicio", label:"Inicio", plan:"Planner · Pestaña 1", groups:[
-   { h:"Desarrollar el Alcance del Proyecto", t:[
-     {x:"Identificar necesidades (Inspección) — (FM) persona a cargo", hint:"Check list · lleva estado, fecha de inicio y fecha final"},
-     {x:"Validación con equipo de verificación (FM, Técnico y/o Supervisor, Líderes)", hint:"Check list"},
-     {x:"Identificar permisos y requisitos (cuando aplique)", apl:true, hint:"Check list · marcar Aplica / No aplica"},
-     {x:"Alcance del Proyecto", pdf:true, hint:"Entregable PDF · Check list"},
-   ]},
-   { h:"Definir proyecto preliminar", t:[
-     {x:"Determinar rubros y cantidades de obra", hint:"Check list"},
-     {x:"Definir Presupuesto de Plan", pdf:true, hint:"Entregable PDF · Check list"},
-     {x:"Desarrollo de Presentación de Plan Anual (PPTX)", hint:"Check list"},
-     {x:"Reunión de Verificación. Firma de Acta y Plan Propuesto", pdf:true, hint:"Entregable PDF o Email"},
-     {x:"Plan Anual Final Aprobado, firmado por Presidente estaca/misión", pdf:true, hint:"Entregable PDF"},
-   ]},
- ]},
+/* =================== DATOS DEL CHECK LIST =================== */
+const PHASES=[
+{id:"inicio",label:"Inicio",plan:"Planner · Pestaña 1",groups:[
+ {h:"Desarrollar el Alcance del Proyecto",t:[
+  {x:"Identificar necesidades (Inspección) — (FM) persona a cargo",hint:"Check list · requiere estado, fecha de inicio y fecha final"},
+  {x:"Validación con equipo de verificación (FM, Técnico y/o Supervisor, Líderes)",hint:"Check list"},
+  {x:"Identificar permisos y requisitos",apl:1,hint:"Cuando aplique · marcar Aplica / No aplica"},
+  {x:"Alcance del Proyecto",pdf:1,hint:"Entregable PDF · ref. OYM005"}]},
+ {h:"Definir proyecto preliminar",t:[
+  {x:"Determinar rubros y cantidades de obra",hint:"Check list"},
+  {x:"Definir Presupuesto de Plan",pdf:1,hint:"Entregable PDF · ref. OYM002"},
+  {x:"Desarrollo de Presentación de Plan Anual (PPTX)",hint:"Check list · ref. OYM001"},
+  {x:"Reunión de Verificación. Firma de Acta y Plan Propuesto",pdf:1,hint:"Entregable PDF o Email · ref. OYM003"},
+  {x:"Plan Anual Final Aprobado, firmado por Presidente estaca/misión",pdf:1,hint:"Entregable PDF · ref. OYM004"}]}]},
 
- { id:"planif", label:"Planificación", plan:"Planner · Pestaña 2", groups:[
-   { h:"Configurar el entorno del proyecto", t:[
-     {x:"Diseño de especialidades y planos (cuando aplique)", apl:true},
-     {x:"Especificaciones técnicas y procesos del proyecto"},
-     {x:"Solicitar permisos (cuando aplique)", apl:true},
-     {x:"Definir tiempo de Inicio y Finalización. Validar con equipo de verificación"},
-     {x:"Definir plazos de rubros", hint:"Detallar rubros: Sillas, Ascensor, Transformador…"},
-     {x:"Definir plazos de compras", hint:"Detallar los rubros"},
-     {x:"Establecer cronograma del proyecto", hint:"Fecha de inicio y fin del proyecto total"},
-     {x:"Configurar herramientas de administración de proyectos", hint:"Libre elección"},
-   ]},
-   { h:"Definir documentación", t:[
-     {x:"Especificar entregas y criterios de aceptación — acta de recepción definitiva (Contratista y Líder)", pdf:true, hint:"Entregable PDF"},
-   ]},
-   { h:"Desarrollar planes de riesgo", t:[
-     {x:"Identificar, Analizar y Documentar planes de administración de riesgos"},
-   ]},
-   { h:"Plan de calidad", t:[
-     {x:"Definir rubros representativos para verificar calidad vs especificaciones", hint:"Registrar rubros marcando si califica o no + comentario"},
-   ]},
-   { h:"Organizar recursos del proyecto", t:[
-     {x:"Definir mobiliarios y equipos a reemplazar"},
-     {x:"Plan de excedentes", hint:"Ítems, fecha de retiro, Dpto. Autosuficiencia"},
-     {x:"Formulario de Disposición de excedentes", pdf:true, hint:"Entregable PDF"},
-     {x:"Definir mobiliarios y equipos a conservar", hint:"Empapelar, plastificar, proteger estado"},
-   ]},
-   { h:"Desarrollar planes de adquisición", t:[
-     {x:"Determinar requisitos de adquisición", hint:"Especificación técnica de cada compra"},
-     {x:"Definir contratistas y proveedores", hint:"A quiénes se va a invitar"},
-     {x:"Definición de uso de personal de técnicos (donde aplique)", apl:true},
-   ]},
-   { h:"Pre-Licitación", t:[
-     {x:"Invitación a Pre-Licitación", pdf:true},
-     {x:"Compartir documentación de pre-licitación en sistema", pdf:true},
-     {x:"Documentar. Acta de Pre-Licitación", pdf:true},
-     {x:"Documentar. Consultas y Respuestas", pdf:true},
-   ]},
-   { h:"Licitación", t:[
-     {x:"Documentar. Acta de Licitación", pdf:true},
-     {x:"Documentar. Minuta aprobación de licitación (cuando se requiera)", pdf:true, apl:true},
-     {x:"Documentar. Carta de adjudicación", pdf:true},
-     {x:"Documentar. Contratos y Pólizas", pdf:true},
-     {x:"Documentar. Notificación de proceder", pdf:true},
-   ]},
-   { h:"Desarrollar Plan Financiero", t:[
-     {x:"Preparar plan financiero"},
-     {x:"Apropiación de fondos"},
-   ]},
- ]},
+{id:"planif",label:"Planificación",plan:"Planner · Pestaña 2",groups:[
+ {h:"Configurar el entorno del proyecto",t:[
+  {x:"Diseño de especialidades y planos",apl:1,hint:"Cuando aplique"},
+  {x:"Especificaciones técnicas y procesos del proyecto"},
+  {x:"Solicitar permisos",apl:1,hint:"Cuando aplique · ref. OYM009"},
+  {x:"Definir tiempo de Inicio y Finalización. Validar con equipo de verificación"},
+  {x:"Definir plazos de rubros",hint:"Detallar rubros críticos: sillas, ascensor, transformador…"},
+  {x:"Definir plazos de compras",hint:"Detallar los rubros"},
+  {x:"Establecer cronograma del proyecto",hint:"Fecha de inicio y fin del proyecto total"},
+  {x:"Configurar herramientas de administración de proyectos",hint:"Libre elección"}]},
+ {h:"Definir documentación",t:[
+  {x:"Especificar entregas y criterios de aceptación — acta de recepción definitiva (Contratista y Líder)",pdf:1}]},
+ {h:"Desarrollar planes de riesgo",t:[
+  {x:"Identificar, Analizar y Documentar planes de administración de riesgos"}]},
+ {h:"Plan de calidad",t:[
+  {x:"Definir rubros representativos para verificar calidad vs especificaciones",hint:"Registrar rubros marcando si califica o no + comentario"}]},
+ {h:"Organizar recursos del proyecto",t:[
+  {x:"Definir mobiliarios y equipos a reemplazar"},
+  {x:"Plan de excedentes",hint:"Ítems, fecha de retiro, Dpto. Autosuficiencia"},
+  {x:"Formulario de Disposición de excedentes",pdf:1,hint:"Entregable PDF · ref. OYM021"},
+  {x:"Definir mobiliarios y equipos a conservar",hint:"Empapelar, plastificar y proteger su estado"}]},
+ {h:"Desarrollar planes de adquisición",t:[
+  {x:"Determinar requisitos de adquisición",hint:"Especificación técnica de cada compra"},
+  {x:"Definir contratistas y proveedores",hint:"A quiénes se va a invitar"},
+  {x:"Definición de uso de personal de técnicos",apl:1,hint:"Donde aplique"}]},
+ {h:"Pre-Licitación",t:[
+  {x:"Invitación a Pre-Licitación",pdf:1},
+  {x:"Compartir documentación de pre-licitación en sistema",pdf:1},
+  {x:"Documentar. Acta de Pre-Licitación",pdf:1,hint:"ref. OYM007"},
+  {x:"Documentar. Consultas y Respuestas",pdf:1,hint:"ref. OYM008"}]},
+ {h:"Licitación",t:[
+  {x:"Documentar. Acta de Licitación",pdf:1,hint:"ref. OYM010"},
+  {x:"Documentar. Minuta aprobación de licitación",pdf:1,apl:1,hint:"Cuando se requiera · ref. OYM013"},
+  {x:"Documentar. Carta de adjudicación",pdf:1,hint:"ref. OYM011"},
+  {x:"Documentar. Contratos y Pólizas",pdf:1,hint:"ref. OYM015–OYM018"},
+  {x:"Documentar. Notificación de proceder",pdf:1,hint:"ref. OYM012"}]},
+ {h:"Desarrollar Plan Financiero",t:[
+  {x:"Preparar plan financiero"},
+  {x:"Apropiación de fondos"}]}]},
 
- { id:"ejec", label:"Ejecución", plan:"Planner · Pestaña 3", groups:[
-   { h:"Compras", t:[
-     {x:"Ejecutar compras proyectadas", hint:"Detallar todos los ítems"},
-     {x:"Verificación de plazos y actualización de cronograma"},
-     {x:"Asignar responsabilidades de entregas", hint:"Orden de compra, si se entregó"},
-   ]},
-   { h:"Dirigir y administrar la ejecución del proyecto", t:[
-     {x:"Repaso de alcance con contratistas"},
-     {x:"Repaso de especificaciones con contratistas"},
-     {x:"Repaso de cronograma de tiempo con contratistas"},
-     {x:"Asignar responsabilidades de muebles y equipos a conservar", hint:"Determinar qué contratista está a cargo"},
-     {x:"Acta de inicio de obra", pdf:true},
-     {x:"Administrar recursos del proyecto", hint:"Notas"},
-     {x:"Administrar plan de riesgo del proyecto", hint:"Notas"},
-     {x:"Administrar plan de calidad", hint:"Notas"},
-   ]},
- ]},
+{id:"ejec",label:"Ejecución",plan:"Planner · Pestaña 3",groups:[
+ {h:"Compras",t:[
+  {x:"Ejecutar compras proyectadas",hint:"Detallar todos los ítems"},
+  {x:"Verificación de plazos y actualización de cronograma"},
+  {x:"Asignar responsabilidades de entregas",hint:"Orden de compra y confirmación de entrega"}]},
+ {h:"Dirigir y administrar la ejecución del proyecto",t:[
+  {x:"Repaso de alcance con contratistas"},
+  {x:"Repaso de especificaciones con contratistas"},
+  {x:"Repaso de cronograma de tiempo con contratistas"},
+  {x:"Asignar responsabilidades de muebles y equipos a conservar",hint:"Determinar qué contratista está a cargo"},
+  {x:"Acta de inicio de obra",pdf:1,hint:"ref. OYM019"},
+  {x:"Administrar recursos del proyecto",hint:"Registrar notas de seguimiento"},
+  {x:"Administrar plan de riesgo del proyecto",hint:"Registrar notas de seguimiento"},
+  {x:"Administrar plan de calidad",hint:"Registrar notas de seguimiento"}]}]},
 
- { id:"superv", label:"Supervisión y Control", plan:"Planner · Pestaña 4", groups:[
-   { h:"Supervisar y controlar el trabajo del proyecto", t:[
-     {x:"Informe semanal de Supervisión", pdf:true, hint:"Avance del proyecto"},
-   ]},
-   { h:"Control de cambios integrado", t:[
-     {x:"Ordenes de Cambio", pdf:true, apl:true, hint:"Donde aplique"},
-   ]},
-   { h:"Comprobación del ámbito", t:[
-     {x:"Aprobación de rubros terminados"},
-   ]},
-   { h:"Control de programación", t:[
-     {x:"Realizar un seguimiento del estado"},
-     {x:"Mantener programación del proyecto"},
-     {x:"Mantener planes de trabajo"},
-   ]},
-   { h:"Administrar finanzas", t:[
-     {x:"Supervisar desviación de costos y programación"},
-     {x:"Controlar costos"},
-     {x:"Mantener plan financiero"},
-   ]},
-   { h:"Realizar control de calidad", t:[
-     {x:"Controlar calidad"},
-     {x:"Realizar inspecciones y auditorías"},
-     {x:"Realizar revisiones del proyecto"},
-     {x:"Medir niveles de calidad"},
-     {x:"Informe Semanal de Calidad", pdf:true},
-   ]},
-   { h:"Mejora continua y partes interesadas", t:[
-     {x:"Facilitar la mejora continua"},
-     {x:"Supervisar satisfacción"},
-     {x:"Resolver problemas"},
-   ]},
-   { h:"Supervisión y control de riesgos", t:[
-     {x:"Administrar riesgos"},
-   ]},
-   { h:"Administración de contratos", t:[
-     {x:"Administrar contratos"},
-   ]},
- ]},
+{id:"superv",label:"Supervisión y Control",plan:"Planner · Pestaña 4",groups:[
+ {h:"Supervisar y controlar el trabajo del proyecto",t:[
+  {x:"Informe semanal de Supervisión",pdf:1,hint:"Avance del proyecto · ref. OYM022"}]},
+ {h:"Control de cambios integrado",t:[
+  {x:"Ordenes de Cambio",pdf:1,apl:1,hint:"Donde aplique · ref. OYM020"}]},
+ {h:"Comprobación del ámbito",t:[
+  {x:"Aprobación de rubros terminados"}]},
+ {h:"Control de programación",t:[
+  {x:"Realizar un seguimiento del estado"},
+  {x:"Mantener programación del proyecto"},
+  {x:"Mantener planes de trabajo"}]},
+ {h:"Administrar finanzas",t:[
+  {x:"Supervisar desviación de costos y programación"},
+  {x:"Controlar costos"},
+  {x:"Mantener plan financiero"}]},
+ {h:"Realizar control de calidad",t:[
+  {x:"Controlar calidad"},
+  {x:"Realizar inspecciones y auditorías"},
+  {x:"Realizar revisiones del proyecto"},
+  {x:"Medir niveles de calidad"},
+  {x:"Informe Semanal de Calidad",pdf:1,hint:"ref. OYM023"}]},
+ {h:"Mejora continua y partes interesadas",t:[
+  {x:"Facilitar la mejora continua"},
+  {x:"Supervisar satisfacción"},
+  {x:"Resolver problemas"}]},
+ {h:"Supervisión y control de riesgos",t:[{x:"Administrar riesgos"}]},
+ {h:"Administración de contratos",t:[{x:"Administrar contratos"}]}]},
 
- { id:"cierre", label:"Cierre", plan:"Planner · Pestaña 5", groups:[
-   { h:"Cerrar proyecto", t:[
-     {x:"Acta de entrega sustancial", pdf:true},
-     {x:"Acta de entrega definitiva", pdf:true},
-     {x:"Evaluar la satisfacción"},
-     {x:"Resumir resultados del proyecto y lecciones aprendidas"},
-     {x:"Calificación de contratistas. Revisar y reconocer el rendimiento"},
-     {x:"Cerrar registros de proyecto en plataformas"},
-     {x:"Cierre financiero", pdf:true},
-     {x:"Informe fotográfico final de obra", pdf:true},
-     {x:"Planos de línea roja de obra (cuando aplique)", pdf:true, apl:true},
-     {x:"Actualización de SharePoint. Planos y fotos"},
-   ]},
-   { h:"Cierre del contrato", t:[
-     {x:"Cerrar contrato"},
-   ]},
- ]},
-];
+{id:"cierre",label:"Cierre",plan:"Planner · Pestaña 5",groups:[
+ {h:"Cerrar proyecto",t:[
+  {x:"Acta de entrega sustancial",pdf:1,hint:"Obras > 100k · ref. OYM024"},
+  {x:"Acta de entrega definitiva",pdf:1,hint:"ref. OYM025"},
+  {x:"Evaluar la satisfacción"},
+  {x:"Resumir resultados del proyecto y lecciones aprendidas"},
+  {x:"Calificación de contratistas. Revisar y reconocer el rendimiento"},
+  {x:"Cerrar registros de proyecto en plataformas"},
+  {x:"Cierre financiero",pdf:1},
+  {x:"Informe fotográfico final de obra",pdf:1,hint:"ref. CONS030"},
+  {x:"Planos de línea roja de obra",pdf:1,apl:1,hint:"Cuando aplique · ref. CONS031"},
+  {x:"Actualización de SharePoint. Planos y fotos"}]},
+ {h:"Cierre del contrato",t:[{x:"Cerrar contrato"}]}]}];
 
-const DOCS = [
+const DOCS=[
  {sec:"Plan Anual"},
- {c:"OYM001", d:"Presentación de Plan Anual ppt.", e:"PDF"},
- {c:"OYM002", d:"Cuadro de presupuesto aprobado en el Plan Anual", e:"PDF"},
- {c:"OYM003", d:"Acta de Reunión Verificación y Plan propuesto", e:"PDF"},
- {c:"OYM004", d:"Plan Anual Final Aprobado firmado por el Líder", e:"PDF"},
+ {c:"OYM001",d:"Presentación de Plan Anual ppt.",e:"PDF"},
+ {c:"OYM002",d:"Cuadro de presupuesto aprobado en el Plan Anual",e:"PDF"},
+ {c:"OYM003",d:"Acta de Reunión Verificación y Plan propuesto",e:"PDF"},
+ {c:"OYM004",d:"Plan Anual Final Aprobado firmado por el Líder",e:"PDF"},
  {sec:"Licitación · Pre-licitación"},
- {c:"OYM005", d:"Alcance del proyecto *", e:"PDF"},
- {c:"OYM006", d:"Expediente Técnico **", e:"PDF"},
- {c:"OYM007", d:"Acta de Pre-licitación", e:"PDF"},
- {c:"OYM008", d:"Adenda Consultas y respuestas", e:"PDF"},
- {c:"OYM009", d:"Permiso / Licencia de Construcción", e:"PDF", fire:true},
+ {c:"OYM005",d:"Alcance del proyecto *",e:"PDF"},
+ {c:"OYM006",d:"Expediente Técnico **",e:"PDF"},
+ {c:"OYM007",d:"Acta de Pre-licitación",e:"PDF"},
+ {c:"OYM008",d:"Adenda Consultas y respuestas",e:"PDF"},
+ {c:"OYM009",d:"Permiso / Licencia de Construcción",e:"PDF",f:1},
  {sec:"Licitación"},
- {c:"OYM010", d:"Acta de licitación", e:"PDF"},
- {c:"OYM011", d:"Carta de Adjudicación", e:"PDF"},
+ {c:"OYM010",d:"Acta de licitación",e:"PDF"},
+ {c:"OYM011",d:"Carta de Adjudicación",e:"PDF"},
  {sec:"Adjudicación"},
- {c:"OYM012", d:"Notificación a Proceder", e:"PDF"},
+ {c:"OYM012",d:"Notificación a Proceder",e:"PDF"},
  {sec:"Apropiación de fondos"},
- {c:"OYM013", d:"Minuta de aprobación cuando se requiera", e:"PDF"},
+ {c:"OYM013",d:"Minuta de aprobación cuando se requiera",e:"PDF"},
  {sec:"Ejecución · Administración Financiera"},
- {c:"OYM015", d:"Contrato de Construcción ***", e:"PDF", fire:true},
- {c:"OYM016", d:"Contrato de supervisor de obra", e:"PDF"},
- {c:"OYM017", d:"Contrato con proveedores", e:"PDF"},
- {c:"OYM018", d:"Pólizas de Seguro (Carta fianza, Póliza CAR, SCTR)", e:"PDF"},
- {c:"OYM019", d:"Acta de Inicio de Obra", e:"PDF"},
- {c:"OYM020", d:"Ordenes de Cambio", e:"PDF", fire:true},
- {c:"OYM021", d:"Formulario Disposición de excedentes", e:"PDF"},
- {c:"OYM022", d:"Informe Mensual de Supervisión", e:"PDF"},
- {c:"OYM023", d:"Informe de Calidad", e:"PDF"},
- {c:"OYM024", d:"Acta de Entrega Sustancial > 100k", e:"PDF"},
- {c:"OYM025", d:"Acta de Entrega Definitiva", e:"PDF"},
+ {c:"OYM015",d:"Contrato de Construcción ***",e:"PDF",f:1},
+ {c:"OYM016",d:"Contrato de supervisor de obra",e:"PDF"},
+ {c:"OYM017",d:"Contrato con proveedores",e:"PDF"},
+ {c:"OYM018",d:"Pólizas de Seguro — Carta fianza, Póliza CAR, Seguro SCTR",e:"PDF"},
+ {c:"OYM019",d:"Acta de Inicio de Obra",e:"PDF"},
+ {c:"OYM020",d:"Ordenes de Cambio",e:"PDF",f:1},
+ {c:"OYM021",d:"Formulario Disposición de excedentes",e:"PDF"},
+ {c:"OYM022",d:"Informe Mensual de Supervisión",e:"PDF"},
+ {c:"OYM023",d:"Informe de Calidad",e:"PDF"},
+ {c:"OYM024",d:"Acta de Entrega Sustancial > 100k",e:"PDF"},
+ {c:"OYM025",d:"Acta de Entrega Definitiva",e:"PDF"},
  {sec:"Cierre · Cierre Financiero de Proyecto"},
- {c:"CONS030", d:"Informe Fotográfico final de obra", e:"PDF"},
- {c:"CONS031", d:"Planos de línea roja de obra (cuando aplique)", e:"PDF/CAD"},
-];
+ {c:"CONS030",d:"Informe Fotográfico final de obra",e:"PDF"},
+ {c:"CONS031",d:"Planos de línea roja de obra (cuando aplique)",e:"PDF/CAD"},
+ {sec:"(*) Alcance del Proyecto — detalle"},
+ {c:"OYM005.1",d:"Presupuesto Base",e:"PDF"},
+ {c:"OYM005.2",d:"Tipo de Contrato",e:"PDF"},
+ {c:"OYM005.3",d:"Planos Aprobados por la Municipalidad",e:"PDF"},
+ {c:"OYM005.4",d:"Requerimientos iniciales",e:"PDF"},
+ {c:"OYM005.6",d:"Propuesta del Contratista",e:"PDF"},
+ {c:"OYM005.7",d:"Relación de Subcontratistas",e:"PDF"},
+ {c:"OYM005.8",d:"Requerimientos",e:"PDF"},
+ {sec:"(**) Expediente Técnico — detalle"},
+ {c:"OYM006.1",d:"Planos Aprobados por la Municipalidad",e:"PDF",f:1},
+ {c:"OYM006.2",d:"Memorias Descriptivas",e:"PDF"},
+ {c:"OYM006.3",d:"Especificaciones Técnicas",e:"PDF"},
+ {c:"OYM006.4",d:"Licencias y permisos (cuando apliquen)",e:"PDF"},
+ {c:"OYM006.5",d:"Otros: Estudios de Suelo, Levantamiento Topográfico",e:"PDF"},
+ {sec:"(***) Contrato de Construcción — detalle"},
+ {c:"OYM015.1",d:"Contrato de Proyecto",e:"PDF",f:1},
+ {c:"OYM015.2",d:"Alcance del Proyecto",e:"PDF"},
+ {c:"OYM015.3",d:"Expediente Técnico",e:"PDF"},
+ {c:"OYM015.4",d:"Cronograma de Obra",e:"PDF"},
+ {c:"OYM015.5",d:"Análisis de Precios Unitarios",e:"PDF"}];
 
-/* ============ STATE ============ */
-const KEY = "oym_dashboard_v1";
-let STATE = load();
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
-let saveT;
+PHASES.forEach(p=>p.groups.forEach((gr,gi)=>gr.t.forEach((t,ti)=>t.id=p.id+"-"+gi+"-"+ti)));
+
+/* =================== ESTADO =================== */
+const KEY="oym_dash_v2", NGER=5;
+let STATE=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}})();
+let GERS=(STATE._gers&&STATE._gers.length===NGER)?STATE._gers:["Gerencia 1","Gerencia 2","Gerencia 3","Gerencia 4","Gerencia 5"];
+let GER=(typeof STATE._ger==="number")?STATE._ger:0;
+let THEME=STATE._theme||"dark";
+let activeTab=STATE._tab||"inicio";
+let filter="all", query="";
+
+function nk(k){return k[0]==="_"?k:("G"+GER+"|"+k)}
+function g(k,d){const v=STATE[nk(k)];return v===undefined?d:v}
+let st;
 function save(){
-  try{ localStorage.setItem(KEY, JSON.stringify(STATE)); }catch(e){}
-  const n=document.getElementById('savedNote');
-  n.textContent="Guardado "+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
-  clearTimeout(saveT); saveT=setTimeout(()=>{n.textContent="";},2500);
+  STATE._gers=GERS; STATE._ger=GER; STATE._theme=THEME; STATE._tab=activeTab;
+  try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){}
+  const n=document.getElementById('saved');
+  n.textContent="✓ Guardado "+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  clearTimeout(st); st=setTimeout(()=>n.textContent="",2600);
 }
-function g(id,def){ return (STATE[id]!==undefined)?STATE[id]:def; }
-function set(id,v){ STATE[id]=v; save(); }
+function set(k,v){STATE[nk(k)]=v;save()}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* stable task ids */
-PHASES.forEach(p=>p.groups.forEach((gr,gi)=>gr.t.forEach((t,ti)=>{ t.id=p.id+"-"+gi+"-"+ti; })));
+/* =================== CÁLCULOS =================== */
+const STATUSES=["Pendiente","En progreso","Terminado","No aplica"];
+const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const parseD=s=>{if(!s)return null;const p=s.split("-");const d=new Date(+p[0],+p[1]-1,+p[2]);d.setHours(0,0,0,0);return d};
+const days=(a,b)=>Math.round((b-a)/86400000);
 
-/* ============ RENDER ============ */
-let activeTab = g("_tab","inicio");
-const STATUSES = ["Pendiente","En progreso","Terminado","No aplica"];
+const stOf=t=>g("st_"+t.id,"Pendiente");
+const isDone=t=>stOf(t)==="Terminado";
+const isNA=t=>stOf(t)==="No aplica";
+function isLate(t){
+  if(isDone(t)||isNA(t))return false;
+  const f=parseD(g("df_"+t.id,"")); return !!f && f<today();
+}
+function isSoon(t){
+  if(isDone(t)||isNA(t))return false;
+  const f=parseD(g("df_"+t.id,"")); if(!f)return false;
+  const d=days(today(),f); return d>=0&&d<=7;
+}
+function allTasks(){const a=[];PHASES.forEach(p=>p.groups.forEach(gr=>gr.t.forEach(t=>a.push({t,p,gr}))));return a}
 
-function taskStatus(t){ return g("st_"+t.id, "Pendiente"); }
-function isDone(t){ return taskStatus(t)==="Terminado"; }
-function isNA(t){ return taskStatus(t)==="No aplica"; }
+function stats(gerIdx){
+  const prev=GER; if(gerIdx!==undefined)GER=gerIdx;
+  let done=0,prog=0,total=0,late=0,soon=0,pdfT=0,pdfD=0;
+  allTasks().forEach(({t})=>{
+    if(isNA(t))return; total++;
+    if(isDone(t))done++; else if(stOf(t)==="En progreso")prog++;
+    if(isLate(t))late++; else if(isSoon(t))soon++;
+    if(t.pdf){pdfT++; if(isDone(t))pdfD++}
+  });
+  let docT=0,docD=0;
+  DOCS.forEach(r=>{if(r.sec)return;docT++;if(g("doc_"+r.c,false))docD++});
+  const pct=total?Math.round(done/total*100):0;
+  GER=prev;
+  return {done,prog,total,late,soon,pdfT,pdfD,docT,docD,pct};
+}
+function phaseStats(p){
+  let done=0,total=0;
+  p.groups.forEach(gr=>gr.t.forEach(t=>{if(isNA(t))return;total++;if(isDone(t))done++}));
+  return {done,total,pct:total?Math.round(done/total*100):0};
+}
+function etapaActual(){
+  for(const p of PHASES){const s=phaseStats(p); if(s.pct<100)return p.label}
+  return "Proyecto completado";
+}
+const money=n=>{const v=parseFloat(n);return isNaN(v)?null:v.toLocaleString('es-PE',{maximumFractionDigits:0})};
 
-function renderTabs(){
-  const el=document.getElementById('tabs'); el.innerHTML="";
-  PHASES.concat([{id:"docs",label:"Documentos",docs:true}]).forEach(p=>{
-    const d=document.createElement('div');
-    d.className="tab"+(p.id===activeTab?" active":"");
-    let pct=0;
-    if(!p.docs){ const s=phaseStats(p); pct=s.total? Math.round(s.done/s.total*100):0; }
-    d.innerHTML = p.label + (p.docs?"":'<span class="mini"><i style="width:'+pct+'%"></i></span>');
-    d.onclick=()=>{ activeTab=p.id; set("_tab",p.id); renderTabs(); renderContent(); window.scrollTo({top:0,behavior:'smooth'}); };
+/* =================== RENDER: MENÚ GERENCIAS =================== */
+function renderGnav(){
+  const el=document.getElementById('gnav'); el.innerHTML='<span class="nlbl">Gerencia</span>';
+  GERS.forEach((name,i)=>{
+    const s=stats(i);
+    const b=document.createElement('div');
+    b.className="gbtn"+(i===GER?" active":"");
+    b.innerHTML='<span class="num">'+(i+1)+'</span><span>'+esc(name)+'</span><span class="gp">'+s.pct+'%</span>';
+    b.title="Cambiar a "+name+" · "+s.done+"/"+s.total+" tareas";
+    b.onclick=()=>switchGer(i);
+    el.appendChild(b);
+  });
+  const r=document.createElement('button');
+  r.className="iconbtn"; r.textContent="✎"; r.title="Renombrar gerencia activa";
+  r.onclick=renameGer; el.appendChild(r);
+  document.getElementById('gtagTxt').textContent=GERS[GER];
+}
+function switchGer(i){
+  GER=i; save(); refreshAll(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function renameGer(){
+  const v=prompt("Nombre de la gerencia "+(GER+1)+":",GERS[GER]);
+  if(v===null)return;
+  GERS[GER]=v.trim()||("Gerencia "+(GER+1)); save(); renderGnav();
+}
+
+/* =================== RENDER: KPIs =================== */
+function renderKpis(){
+  const s=stats(), el=document.getElementById('kpis');
+  const fi=parseD(g("fini","")), ff=parseD(g("ffin",""));
+  let timeHtml='<div class="kv">—</div><div class="kf">Define las fechas del proyecto</div>', timeCls="k-mut";
+  if(fi&&ff&&ff>=fi){
+    const tot=days(fi,ff)||1, el2=days(fi,today()), rest=days(today(),ff);
+    const tpct=Math.max(0,Math.min(100,Math.round(el2/tot*100)));
+    if(rest<0){timeCls="k-dan";timeHtml='<div class="kv">'+Math.abs(rest)+'<small> d</small></div><div class="kf">Vencido · plazo superado</div>'}
+    else{
+      timeCls=rest<=15?"k-warn":"k-ok";
+      const diff=s.pct-tpct;
+      const lbl=diff>=5?"Adelantado":diff<=-5?"Atrasado vs. plan":"En tiempo";
+      timeHtml='<div class="kv">'+rest+'<small> d</small></div><div class="kf">'+lbl+' · '+tpct+'% del plazo'+'</div>';
+    }
+  }
+  const pre=parseFloat(g("presu","")), eje=parseFloat(g("ejec",""));
+  let budHtml='<div class="kv">—</div><div class="kf">Registra el presupuesto</div>', budCls="k-mut";
+  if(!isNaN(pre)&&pre>0){
+    const e=isNaN(eje)?0:eje, bp=Math.round(e/pre*100);
+    budCls=bp>100?"k-dan":bp>90?"k-warn":"k-ok";
+    budHtml='<div class="kv">'+bp+'<small>%</small></div><div class="kf">'+money(e)+' / '+money(pre)+(bp>100?' · sobregiro':'')+'</div>';
+  }
+  const C=2*Math.PI*30;
+  el.innerHTML=
+   '<div class="kpi '+(s.pct===100?'k-ok':'')+'"><div class="kl">Avance global</div>'+
+     '<div class="kpi-ring"><div class="ring"><svg width="72" height="72">'+
+       '<circle cx="36" cy="36" r="30" stroke="var(--surface3)" stroke-width="7" fill="none"/>'+
+       '<circle cx="36" cy="36" r="30" stroke="'+(s.pct===100?'var(--ok)':'var(--accent)')+'" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-s.pct/100))+'"/>'+
+     '</svg><div class="pct">'+s.pct+'%</div></div>'+
+     '<div style="font-size:11.5px;color:var(--muted);line-height:1.7">'+
+       '<div><b style="color:var(--ok)">'+s.done+'</b> terminadas</div>'+
+       '<div><b style="color:var(--warn)">'+s.prog+'</b> en progreso</div>'+
+       '<div><b>'+s.total+'</b> aplicables</div></div></div></div>'+
+
+   '<div class="kpi '+(s.late?'k-dan':'k-ok')+'"><div class="kl">Tareas atrasadas</div>'+
+     '<div class="kv">'+s.late+'</div><div class="kf">'+(s.late?'Requieren atención inmediata':'Sin atrasos registrados')+'</div></div>'+
+
+   '<div class="kpi '+timeCls+'"><div class="kl">Plazo restante</div>'+timeHtml+'</div>'+
+
+   '<div class="kpi '+(s.pdfD===s.pdfT&&s.pdfT?'k-ok':'k-warn')+'"><div class="kl">Entregables PDF</div>'+
+     '<div class="kv">'+s.pdfD+'<small>/'+s.pdfT+'</small></div><div class="kf">Documentos formales del proceso</div></div>'+
+
+   '<div class="kpi '+budCls+'"><div class="kl">Presupuesto ejecutado</div>'+budHtml+'</div>'+
+
+   '<div class="kpi '+(s.docD===s.docT?'k-ok':'k-mut')+'"><div class="kl">Expediente archivado</div>'+
+     '<div class="kv">'+s.docD+'<small>/'+s.docT+'</small></div><div class="kf">Documentos del índice OYM</div></div>';
+
+  document.getElementById('etapaTxt').textContent="Etapa actual: "+etapaActual();
+}
+
+/* =================== RENDER: FASES =================== */
+function renderFases(){
+  const el=document.getElementById('fases'); el.innerHTML="";
+  PHASES.forEach((p,i)=>{
+    const s=phaseStats(p);
+    const d=document.createElement('div'); d.className="pbar";
+    d.innerHTML='<div class="pt"><b>'+(i+1)+'. '+p.label+'</b><span>'+s.done+'/'+s.total+' · '+s.pct+'%</span></div>'+
+      '<div class="track '+(s.pct===100?'t-full':s.pct===0?'t-zero':'')+'"><i style="width:'+Math.max(s.pct,2)+'%"></i></div>';
     el.appendChild(d);
   });
+  document.getElementById('fasesSub').textContent=etapaActual();
 }
 
-function phaseStats(p){
-  let done=0,prog=0,total=0;
-  p.groups.forEach(gr=>gr.t.forEach(t=>{
-    if(isNA(t)) return;
-    total++;
-    if(isDone(t)) done++;
-    else if(taskStatus(t)==="En progreso") prog++;
-  }));
-  return {done,prog,total};
+/* =================== RENDER: ALERTAS =================== */
+function renderAlerts(){
+  const el=document.getElementById('alerts'); el.innerHTML="";
+  const late=[],soon=[],noDate=[];
+  allTasks().forEach(({t,p})=>{
+    if(isLate(t))late.push({t,p}); else if(isSoon(t))soon.push({t,p});
+    else if(!isDone(t)&&!isNA(t)&&!g("df_"+t.id,""))noDate.push({t,p});
+  });
+  const add=(cls,icon,title,sub)=>{
+    const d=document.createElement('div'); d.className="alert "+cls;
+    d.innerHTML='<span class="ai">'+icon+'</span><div><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></div>';
+    el.appendChild(d);
+  };
+  late.slice(0,4).forEach(({t,p})=>add("a-dan","⚠",t.x,p.label+" · venció el "+g("df_"+t.id,"")));
+  if(late.length>4)add("a-dan","⚠","+"+(late.length-4)+" tareas atrasadas más","Filtra por «Atrasadas» para verlas todas");
+  soon.slice(0,3).forEach(({t,p})=>add("a-warn","◷",t.x,p.label+" · vence el "+g("df_"+t.id,"")));
+  const ff=parseD(g("ffin",""));
+  if(ff){const r=days(today(),ff);
+    if(r<0)add("a-dan","⚑","Plazo del proyecto vencido","La fecha de fin fue hace "+Math.abs(r)+" días");
+    else if(r<=15)add("a-warn","⚑","Cierre del proyecto próximo","Quedan "+r+" días para la fecha de fin");}
+  if(noDate.length)add("a-info","◇",noDate.length+" tareas sin fecha de finalización","Asigna fechas para activar el control de atrasos");
+  const s=stats();
+  if(s.pct===100)add("a-ok","✓","Todas las tareas completadas","El proyecto está listo para el cierre documental");
+  if(!el.children.length)add("a-ok","✓","Sin alertas","No hay tareas atrasadas ni vencimientos próximos");
+  document.getElementById('alertSub').textContent=late.length?(late.length+" críticas"):"Al día";
 }
 
-function globalStats(){
-  let done=0,prog=0,total=0;
-  PHASES.forEach(p=>{ const s=phaseStats(p); done+=s.done; prog+=s.prog; total+=s.total; });
-  return {done,prog,total};
+/* =================== RENDER: TABS =================== */
+function renderTabs(){
+  const el=document.getElementById('tabs'); el.innerHTML="";
+  PHASES.forEach((p,i)=>{
+    const s=phaseStats(p);
+    const b=document.createElement('button');
+    b.className="tab"+(p.id===activeTab?" active":"");
+    b.innerHTML=(i+1)+'. '+p.label+'<span class="cnt'+(s.pct===100?' full':'')+'">'+s.done+'/'+s.total+'</span>';
+    b.onclick=()=>{activeTab=p.id;save();renderTabs();renderContent()};
+    el.appendChild(b);
+  });
+  const s=stats();
+  const b=document.createElement('button');
+  b.className="tab"+(activeTab==="docs"?" active":"");
+  b.innerHTML='Expediente<span class="cnt'+(s.docD===s.docT?' full':'')+'">'+s.docD+'/'+s.docT+'</span>';
+  b.onclick=()=>{activeTab="docs";save();renderTabs();renderContent()};
+  el.appendChild(b);
 }
 
-function updateProgress(){
-  const s=globalStats();
-  const pct = s.total? Math.round(s.done/s.total*100):0;
-  document.getElementById('pctTxt').textContent=pct+"%";
-  const C=2*Math.PI*32;
-  document.getElementById('ringfg').setAttribute('stroke-dashoffset', C*(1-pct/100));
-  document.getElementById('mDone').textContent=s.done;
-  document.getElementById('mProg').textContent=s.prog;
-  document.getElementById('mTotal').textContent=s.total;
+/* =================== RENDER: CONTENIDO =================== */
+function matches(t){
+  if(query&&!(t.x+" "+(t.hint||"")).toLowerCase().includes(query))return false;
+  if(filter==="all")return true;
+  if(filter==="late")return isLate(t);
+  return stOf(t)===filter;
 }
-
-function statusClass(v){ return v==="Terminado"?"st-done":v==="En progreso"?"st-prog":v==="No aplica"?"st-na":""; }
-
 function renderContent(){
   const c=document.getElementById('content'); c.innerHTML="";
-  if(activeTab==="docs"){ return renderDocs(c); }
-  const p=PHASES.find(x=>x.id===activeTab);
-  c.innerHTML = '<p class="planlabel">'+p.plan+'</p><h2 class="phasehead">'+p.label+'</h2>';
-  p.groups.forEach((gr,gi)=>{
-    const gEl=document.createElement('div'); gEl.className="group";
-    const done=gr.t.filter(isDone).length;
-    gEl.innerHTML='<h3>'+gr.h+'<span class="gcount">'+done+'/'+gr.t.length+'</span></h3>';
-    gr.t.forEach(t=>gEl.appendChild(taskEl(t)));
-    c.appendChild(gEl);
+  if(activeTab==="docs")return renderDocs(c);
+  const p=PHASES.find(x=>x.id===activeTab), s=phaseStats(p);
+  c.insertAdjacentHTML('beforeend',
+    '<div class="phase-head"><div class="pl">'+p.plan+'</div><h2>'+p.label+'</h2></div>');
+  let shown=0;
+  p.groups.forEach(gr=>{
+    const vis=gr.t.filter(matches); if(!vis.length)return;
+    shown+=vis.length;
+    const done=gr.t.filter(isDone).length, tot=gr.t.filter(t=>!isNA(t)).length;
+    const pct=tot?Math.round(done/tot*100):0;
+    const el=document.createElement('div'); el.className="group";
+    el.innerHTML='<div class="ghead"><h3>'+esc(gr.h)+'</h3>'+
+      '<span class="gc'+(pct===100?' full':'')+'">'+done+'/'+tot+'</span>'+
+      '<span class="gtrack"><i style="width:'+pct+'%"></i></span></div>';
+    vis.forEach(t=>el.appendChild(taskEl(t)));
+    c.appendChild(el);
   });
+  if(!shown)c.insertAdjacentHTML('beforeend','<div class="empty">No hay tareas que coincidan con el filtro.</div>');
 }
 
 function taskEl(t){
+  const v=stOf(t), late=isLate(t), soon=isSoon(t);
   const row=document.createElement('div');
-  const st=taskStatus(t);
-  row.className="task"+(st==="Terminado"?" done":"");
+  row.className="task "+(v==="Terminado"?"s-done":late?"s-late":v==="En progreso"?"s-prog":v==="No aplica"?"s-na":"");
 
   const cb=document.createElement('input');
-  cb.type="checkbox"; cb.className="cb"; cb.checked=(st==="Terminado");
-  cb.onchange=()=>{ setStatus(t, cb.checked?"Terminado":"Pendiente"); };
+  cb.type="checkbox"; cb.className="cb"; cb.checked=(v==="Terminado");
+  cb.onchange=()=>setStatus(t,cb.checked?"Terminado":"Pendiente");
 
-  const body=document.createElement('div'); body.className="tbody";
-  let badges="";
-  if(t.pdf) badges+='<span class="badge pdf">PDF</span>';
-  if(t.apl) badges+='<span class="badge apl">APLICA?</span>';
-  body.innerHTML='<div class="ttext">'+t.x+badges+'</div>'+(t.hint?'<div class="thint">'+t.hint+'</div>':'');
+  const b=document.createElement('div'); b.className="tb";
+  let tags="";
+  if(t.pdf)tags+='<span class="tag pdf">PDF</span>';
+  if(t.apl)tags+='<span class="tag apl">¿Aplica?</span>';
+  if(late)tags+='<span class="tag late">Atrasada</span>';
+  else if(soon)tags+='<span class="tag soon">Por vencer</span>';
+  b.innerHTML='<div class="tt">'+esc(t.x)+tags+'</div>'+(t.hint?'<div class="th">'+esc(t.hint)+'</div>':'');
 
-  const ctr=document.createElement('div'); ctr.className="controls";
-  // status select
-  const sel=document.createElement('select'); sel.className="sel "+statusClass(st);
-  STATUSES.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; if(s===st)o.selected=true; sel.appendChild(o); });
-  sel.onchange=()=>{ setStatus(t, sel.value); };
-  // dates
-  const di=document.createElement('input'); di.type="date"; di.className="dt"; di.title="Fecha de inicio";
-  di.value=g("di_"+t.id,""); di.onchange=()=>set("di_"+t.id, di.value);
-  const dsep=document.createElement('span'); dsep.className="lblmini"; dsep.textContent="→";
-  const df=document.createElement('input'); df.type="date"; df.className="dt"; df.title="Fecha final";
-  df.value=g("df_"+t.id,""); df.onchange=()=>set("df_"+t.id, df.value);
-  // comment
-  const cm=document.createElement('input'); cm.className="cmt"; cm.placeholder="Comentario / responsable";
-  cm.value=g("cm_"+t.id,""); cm.oninput=()=>set("cm_"+t.id, cm.value);
+  const ctr=document.createElement('div'); ctr.className="ctr";
+  const sel=document.createElement('select');
+  sel.className="sel "+(v==="Terminado"?"v-done":v==="En progreso"?"v-prog":v==="No aplica"?"v-na":"");
+  STATUSES.forEach(s=>{const o=document.createElement('option');o.value=o.textContent=s;if(s===v)o.selected=true;sel.appendChild(o)});
+  sel.onchange=()=>setStatus(t,sel.value);
 
-  ctr.append(sel, di, dsep, df, cm);
-  body.appendChild(ctr);
-  row.append(cb, body);
-  return row;
+  const resp=document.createElement('input');
+  resp.className="mini resp"; resp.placeholder="Responsable";
+  resp.value=g("rs_"+t.id,""); resp.oninput=()=>set("rs_"+t.id,resp.value);
+
+  const di=document.createElement('input');
+  di.type="date"; di.className="dt"; di.title="Fecha de inicio";
+  di.value=g("di_"+t.id,""); di.onchange=()=>{set("di_"+t.id,di.value);refreshHead()};
+
+  const ar=document.createElement('span'); ar.className="arw"; ar.textContent="→";
+
+  const df=document.createElement('input');
+  df.type="date"; df.className="dt"; df.title="Fecha final";
+  df.value=g("df_"+t.id,""); df.onchange=()=>{set("df_"+t.id,df.value);renderContent();refreshHead()};
+
+  const nt=document.createElement('input');
+  nt.className="mini note"; nt.placeholder="Notas / observaciones";
+  nt.value=g("nt_"+t.id,""); nt.oninput=()=>set("nt_"+t.id,nt.value);
+
+  ctr.append(sel,resp,di,ar,df,nt); b.appendChild(ctr);
+  row.append(cb,b); return row;
 }
-
-function setStatus(t,v){
-  set("st_"+t.id, v);
-  renderContent(); renderTabs(); updateProgress();
-}
+function setStatus(t,v){set("st_"+t.id,v);renderContent();refreshHead()}
+function refreshHead(){renderGnav();renderKpis();renderFases();renderAlerts();renderTabs()}
 
 function renderDocs(c){
-  c.innerHTML = '<p class="planlabel">Índice documental</p><h2 class="phasehead">Documentos del Proyecto</h2>'+
-    '<p class="thint" style="margin-bottom:16px">Marca cada documento cuando esté archivado. '+
-    '<span class="fire">●</span> = requiere revisión Antifuego.</p>';
+  const s=stats();
+  c.insertAdjacentHTML('beforeend',
+   '<div class="phase-head"><div class="pl">Índice documental</div><h2>Expediente del Proyecto</h2></div>'+
+   '<div class="panel" style="margin-bottom:16px"><div class="panel-b" style="padding:14px 18px">'+
+   '<div class="pbar"><div class="pt"><b>Documentos archivados</b><span>'+s.docD+'/'+s.docT+'</span></div>'+
+   '<div class="track"><i style="width:'+(s.docT?s.docD/s.docT*100:0)+'%"></i></div></div></div></div>');
+  const wrap=document.createElement('div'); wrap.className="panel";
+  const tw=document.createElement('div'); tw.className="tblwrap";
   const tbl=document.createElement('table');
-  tbl.innerHTML='<thead><tr><th style="width:34px"></th><th style="width:90px">Código</th><th>Documento</th><th style="width:110px">Formato</th></tr></thead>';
+  tbl.innerHTML='<thead><tr><th style="width:40px"></th><th style="width:100px">Código</th><th>Documento</th><th style="width:150px">Responsable</th><th style="width:120px">Fecha</th><th style="width:90px">Formato</th></tr></thead>';
   const tb=document.createElement('tbody');
-  DOCS.forEach((r,i)=>{
+  let shown=0;
+  DOCS.forEach(r=>{
+    if(r.sec){const tr=document.createElement('tr');tr.className="sec";tr.innerHTML='<td colspan="6">'+esc(r.sec)+'</td>';tb.appendChild(tr);return}
+    if(query&&!(r.c+" "+r.d).toLowerCase().includes(query))return;
+    shown++;
     const tr=document.createElement('tr');
-    if(r.sec){ tr.className="sec"; tr.innerHTML='<td></td><td colspan="3">'+r.sec+'</td>'; tb.appendChild(tr); return; }
-    const id="doc_"+r.c;
     const td0=document.createElement('td');
-    const cb=document.createElement('input'); cb.type="checkbox"; cb.className="cb"; cb.style.width="18px"; cb.style.height="18px";
-    cb.checked=g(id,false); cb.onchange=()=>{ set(id, cb.checked); };
-    td0.appendChild(cb);
-    tr.appendChild(td0);
+    const cb=document.createElement('input');
+    cb.type="checkbox"; cb.className="cb"; cb.style.cssText="width:17px;height:17px";
+    cb.checked=g("doc_"+r.c,false);
+    cb.onchange=()=>{set("doc_"+r.c,cb.checked);refreshHead()};
+    td0.appendChild(cb); tr.appendChild(td0);
     tr.insertAdjacentHTML('beforeend','<td><span class="code">'+r.c+'</span></td>');
-    tr.insertAdjacentHTML('beforeend','<td>'+r.d+(r.fire?'<span class="fire">● Antifuego</span>':'')+'</td>');
+    tr.insertAdjacentHTML('beforeend','<td>'+esc(r.d)+(r.f?'<span class="fire">Antifuego</span>':'')+'</td>');
+    const td3=document.createElement('td');
+    const ri=document.createElement('input'); ri.className="mini"; ri.style.width="100%"; ri.placeholder="—";
+    ri.value=g("docr_"+r.c,""); ri.oninput=()=>set("docr_"+r.c,ri.value);
+    td3.appendChild(ri); tr.appendChild(td3);
+    const td4=document.createElement('td');
+    const dd=document.createElement('input'); dd.type="date"; dd.className="dt"; dd.style.width="100%";
+    dd.value=g("docd_"+r.c,""); dd.onchange=()=>set("docd_"+r.c,dd.value);
+    td4.appendChild(dd); tr.appendChild(td4);
     tr.insertAdjacentHTML('beforeend','<td><span class="fmt">'+r.e+'</span></td>');
     tb.appendChild(tr);
   });
-  tbl.appendChild(tb); c.appendChild(tbl);
+  tbl.appendChild(tb); tw.appendChild(tbl); wrap.appendChild(tw); c.appendChild(wrap);
+  if(!shown)c.insertAdjacentHTML('beforeend','<div class="empty">Ningún documento coincide con la búsqueda.</div>');
 }
 
-/* ============ TOP FIELDS ============ */
-document.querySelectorAll('[data-k]').forEach(inp=>{
-  inp.value=g(inp.dataset.k,"");
-  inp.addEventListener('input',()=>set(inp.dataset.k, inp.value));
+/* =================== CAMPOS SUPERIORES =================== */
+function loadFields(){document.querySelectorAll('[data-k]').forEach(i=>i.value=g(i.dataset.k,""))}
+document.querySelectorAll('[data-k]').forEach(i=>{
+  const ev=i.tagName==="SELECT"?"change":"input";
+  i.addEventListener(ev,()=>{set(i.dataset.k,i.value);renderKpis();renderAlerts()});
 });
 
-/* ============ TOOLBAR ============ */
-document.getElementById('btnReset').onclick=()=>{
-  if(confirm("¿Reiniciar todo el seguimiento? Se borrarán estados, fechas y comentarios guardados en este navegador.")){
-    STATE={}; try{localStorage.removeItem(KEY);}catch(e){}
-    location.reload();
-  }
-};
+/* =================== BARRA DE HERRAMIENTAS =================== */
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();renderContent()});
+document.querySelectorAll('.chip').forEach(c=>{
+  if(c.dataset.f==="all")c.classList.add('on');
+  c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');filter=c.dataset.f;renderContent()};
+});
+document.getElementById('btnPrint').onclick=()=>window.print();
 document.getElementById('btnExport').onclick=()=>{
-  const blob=new Blob([JSON.stringify(STATE,null,2)],{type:"application/json"});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=(g("numero","proyecto")||"proyecto")+"-oym.json"; a.click();
+  const rows=[["Gerencia","Fase","Grupo","Tarea","Estado","Responsable","Inicio","Fin","Notas"]];
+  allTasks().forEach(({t,p,gr})=>rows.push([GERS[GER],p.label,gr.h,t.x,stOf(t),g("rs_"+t.id,""),g("di_"+t.id,""),g("df_"+t.id,""),g("nt_"+t.id,"")]));
+  const csv="﻿"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download=(g("numero","")||GERS[GER].replace(/\s+/g,"-"))+"-seguimiento.csv"; a.click();
+};
+document.getElementById('btnReset').onclick=()=>{
+  if(!confirm('¿Reiniciar el seguimiento de "'+GERS[GER]+'"?\n\nSe borrarán estados, fechas, responsables y notas de esta gerencia. Las demás gerencias no se modifican.'))return;
+  Object.keys(STATE).forEach(k=>{if(k.indexOf("G"+GER+"|")===0)delete STATE[k]});
+  save(); refreshAll();
+};
+document.getElementById('btnTheme').onclick=()=>{
+  THEME=THEME==="dark"?"light":"dark";
+  document.documentElement.setAttribute('data-theme',THEME); save();
 };
 
-/* ============ INIT ============ */
-renderTabs(); renderContent(); updateProgress();
+/* =================== INIT =================== */
+function refreshAll(){loadFields();renderGnav();renderKpis();renderFases();renderAlerts();renderTabs();renderContent()}
+document.documentElement.setAttribute('data-theme',THEME);
+refreshAll();
 </script>
 </body>
 </html>
