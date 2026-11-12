@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Proyectos OYM</title>
+<style>
+  :root{
+    --bg:#1b1d21; --bg2:#232529; --panel:#26282d; --panel2:#2d3036;
+    --line:#3a3d44; --line2:#464a52;
+    --txt:#e9eaec; --muted:#9aa0aa; --faint:#6f757f;
+    --accent:#6ea8fe; --accent2:#4b84e8;
+    --ok:#53c08a; --prog:#e0b64b; --na:#8a8f99; --pend:#6f757f;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:24px 16px 80px}
+
+  /* ---- header ---- */
+  .top{
+    text-align:center; padding:22px 16px 18px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:22px;
+  }
+  .top h1{
+    margin:0; font-size:26px; letter-spacing:.5px; font-weight:800;
+    color:#9db4d6;
+  }
+  .top p{margin:6px 0 0; color:var(--muted); font-size:13px}
+
+  .idrow{
+    display:flex; gap:28px; flex-wrap:wrap;
+    padding:0 2px 22px; border-bottom:1px solid var(--line); margin-bottom:22px;
+  }
+  .idfield{flex:1 1 320px; min-width:240px}
+  .idfield label{display:block; font-weight:700; margin-bottom:6px; font-size:13px}
+  .idfield input{
+    width:100%; background:transparent; border:none; border-bottom:1px solid var(--line2);
+    color:var(--txt); font-size:15px; padding:6px 2px; outline:none;
+  }
+  .idfield input:focus{border-color:var(--accent)}
+
+  /* ---- dashboard cards ---- */
+  .dash{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .card .lbl{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px}
+  .card input{
+    width:100%; background:var(--bg2); border:1px solid var(--line2); border-radius:8px;
+    color:var(--txt); font-size:14px; padding:8px 10px; outline:none;
+  }
+  .card input:focus{border-color:var(--accent)}
+  .datewrap{display:flex; gap:8px; align-items:center}
+  .datewrap input{font-size:13px}
+  .datewrap span{color:var(--faint)}
+
+  .progwrap{display:flex; align-items:center; gap:16px}
+  .ring{position:relative; width:78px; height:78px; flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:18px; font-weight:800;
+  }
+  .progmeta{font-size:12px; color:var(--muted); line-height:1.6}
+  .progmeta b{color:var(--txt); font-weight:700}
+
+  /* ---- tabs ---- */
+  .tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px}
+  .tab{
+    position:relative; background:var(--panel); border:1px solid var(--line);
+    color:var(--muted); padding:9px 14px 10px; border-radius:10px; cursor:pointer;
+    font-size:13px; font-weight:600; white-space:nowrap; transition:.12s;
+  }
+  .tab:hover{color:var(--txt); border-color:var(--line2)}
+  .tab.active{background:var(--accent2); border-color:var(--accent2); color:#fff}
+  .tab .mini{
+    display:block; height:3px; border-radius:3px; margin-top:7px;
+    background:var(--line2); overflow:hidden;
+  }
+  .tab .mini i{display:block; height:100%; background:var(--ok); width:0}
+  .tab.active .mini{background:rgba(255,255,255,.3)}
+  .tab.active .mini i{background:#fff}
+
+  .planlabel{font-size:11px; letter-spacing:2px; color:var(--faint); text-transform:uppercase; margin:0 0 4px}
+  .phasehead{font-size:22px; font-weight:800; margin:0 0 18px}
+
+  /* ---- groups & tasks ---- */
+  .group{margin-bottom:22px}
+  .group>h3{
+    font-size:15px; font-weight:700; margin:0 0 10px; color:#cfd4dc;
+    display:flex; align-items:center; gap:10px;
+  }
+  .group>h3 .gcount{font-size:11px; color:var(--faint); font-weight:600}
+
+  .task{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px; margin-bottom:9px;
+    display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start;
+  }
+  .task.done{border-color:rgba(83,192,138,.4); background:rgba(83,192,138,.06)}
+  .cb{
+    appearance:none; -webkit-appearance:none; width:20px; height:20px; margin:2px 0 0;
+    border:2px solid var(--line2); border-radius:6px; cursor:pointer; position:relative; flex:none;
+    background:var(--bg2);
+  }
+  .cb:checked{background:var(--ok); border-color:var(--ok)}
+  .cb:checked::after{
+    content:""; position:absolute; left:6px; top:2px; width:5px; height:10px;
+    border:solid #16261d; border-width:0 2px 2px 0; transform:rotate(45deg);
+  }
+  .tbody{min-width:0}
+  .ttext{font-size:14px; margin-bottom:2px}
+  .task.done .ttext{color:var(--muted); text-decoration:line-through}
+  .thint{font-size:12px; color:var(--faint); margin-bottom:9px}
+  .badge{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.4px;
+    padding:2px 7px; border-radius:20px; margin-left:8px; vertical-align:middle;
+    border:1px solid var(--line2); color:var(--muted);
+  }
+  .badge.pdf{color:#e78; border-color:rgba(238,119,136,.4)}
+  .badge.apl{color:#cba; border-color:rgba(200,180,160,.35)}
+
+  .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .sel{
+    background:var(--bg2); border:1px solid var(--line2); color:var(--txt);
+    border-radius:8px; padding:6px 9px; font-size:12px; outline:none; cursor:pointer;
+  }
+  .sel.st-prog{color:var(--prog); border-color:rgba(224,182,75,.5)}
+  .sel.st-done{color:var(--ok); border-color:rgba(83,192,138,.5)}
+  .sel.st-na{color:var(--na)}
+  .dt{
+    background:var(--bg2); border:1px solid var(--line2); color:var(--txt);
+    border-radius:8px; padding:6px 9px; font-size:12px; outline:none; color-scheme:dark;
+  }
+  .dt:focus,.sel:focus{border-color:var(--accent)}
+  .cmt{
+    flex:1 1 180px; min-width:140px; background:var(--bg2); border:1px solid var(--line2);
+    color:var(--txt); border-radius:8px; padding:6px 9px; font-size:12px; outline:none;
+  }
+  .cmt:focus{border-color:var(--accent)}
+  .lblmini{font-size:10px; color:var(--faint); align-self:center}
+
+  /* ---- documentos table ---- */
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  thead th{
+    text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase;
+    letter-spacing:.5px; padding:8px 10px; border-bottom:1px solid var(--line2);
+  }
+  tbody td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:middle}
+  tbody tr.sec td{background:var(--bg2); font-weight:700; color:#cfd4dc; letter-spacing:.3px}
+  td .code{font-family:ui-monospace,Menlo,monospace; color:var(--accent); font-size:12px}
+  td .fmt{font-size:10px; font-weight:700; color:var(--faint); border:1px solid var(--line2); padding:1px 6px; border-radius:6px}
+  td .fire{font-size:10px; color:#e78; margin-left:6px}
+
+  .toolbar{display:flex; gap:10px; justify-content:flex-end; margin-bottom:18px; flex-wrap:wrap}
+  .btn{
+    background:var(--panel2); border:1px solid var(--line2); color:var(--txt);
+    padding:8px 14px; border-radius:9px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .btn:hover{border-color:var(--accent)}
+  .btn.danger:hover{border-color:#e78; color:#e78}
+  .saved{font-size:11px; color:var(--faint); align-self:center}
+
+  @media(max-width:720px){
+    .dash{grid-template-columns:1fr}
+    .task{grid-template-columns:22px 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <h1>DOCUMENTOS PROYECTOS OYM</h1>
+    <p>Dashboard de seguimiento de proyectos · Operaciones y Mantenimiento</p>
+  </div>
+
+  <div class="idrow">
+    <div class="idfield"><label>Proyecto:</label><input id="f_proyecto" data-k="proyecto" placeholder="Nombre del proyecto / estaca"></div>
+    <div class="idfield"><label>Número de Proyecto:</label><input id="f_numero" data-k="numero" placeholder="OYM-000"></div>
+  </div>
+
+  <div class="dash">
+    <div class="card">
+      <div class="lbl">Nombre del proyecto</div>
+      <input id="d_nombre" data-k="nombre" placeholder="Ej. Capilla Estaca Norte">
+    </div>
+    <div class="card">
+      <div class="lbl">Fechas de proyecto</div>
+      <div class="datewrap">
+        <input type="date" id="d_ini" data-k="fini" style="color-scheme:dark">
+        <span>→</span>
+        <input type="date" id="d_fin" data-k="ffin" style="color-scheme:dark">
+      </div>
+    </div>
+    <div class="card">
+      <div class="lbl">Progreso</div>
+      <div class="progwrap">
+        <div class="ring">
+          <svg width="78" height="78">
+            <circle cx="39" cy="39" r="32" stroke="#3a3d44" stroke-width="8" fill="none"></circle>
+            <circle id="ringfg" cx="39" cy="39" r="32" stroke="#53c08a" stroke-width="8" fill="none"
+              stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201"></circle>
+          </svg>
+          <div class="pct" id="pctTxt">0%</div>
+        </div>
+        <div class="progmeta">
+          <div><b id="mDone">0</b> terminadas</div>
+          <div><b id="mProg">0</b> en progreso</div>
+          <div><b id="mTotal">0</b> aplicables</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="toolbar">
+    <span class="saved" id="savedNote"></span>
+    <button class="btn" id="btnExport">Exportar JSON</button>
+    <button class="btn danger" id="btnReset">Reiniciar</button>
+  </div>
+
+  <div id="content"></div>
+
+</div>
+
+<script>
+/* ============ DATA MODEL ============ */
+const PHASES = [
+ { id:"inicio", label:"Inicio", plan:"Planner · Pestaña 1", groups:[
+   { h:"Desarrollar el Alcance del Proyecto", t:[
+     {x:"Identificar necesidades (Inspección) — (FM) persona a cargo", hint:"Check list · lleva estado, fecha de inicio y fecha final"},
+     {x:"Validación con equipo de verificación (FM, Técnico y/o Supervisor, Líderes)", hint:"Check list"},
+     {x:"Identificar permisos y requisitos (cuando aplique)", apl:true, hint:"Check list · marcar Aplica / No aplica"},
+     {x:"Alcance del Proyecto", pdf:true, hint:"Entregable PDF · Check list"},
+   ]},
+   { h:"Definir proyecto preliminar", t:[
+     {x:"Determinar rubros y cantidades de obra", hint:"Check list"},
+     {x:"Definir Presupuesto de Plan", pdf:true, hint:"Entregable PDF · Check list"},
+     {x:"Desarrollo de Presentación de Plan Anual (PPTX)", hint:"Check list"},
+     {x:"Reunión de Verificación. Firma de Acta y Plan Propuesto", pdf:true, hint:"Entregable PDF o Email"},
+     {x:"Plan Anual Final Aprobado, firmado por Presidente estaca/misión", pdf:true, hint:"Entregable PDF"},
+   ]},
+ ]},
+
+ { id:"planif", label:"Planificación", plan:"Planner · Pestaña 2", groups:[
+   { h:"Configurar el entorno del proyecto", t:[
+     {x:"Diseño de especialidades y planos (cuando aplique)", apl:true},
+     {x:"Especificaciones técnicas y procesos del proyecto"},
+     {x:"Solicitar permisos (cuando aplique)", apl:true},
+     {x:"Definir tiempo de Inicio y Finalización. Validar con equipo de verificación"},
+     {x:"Definir plazos de rubros", hint:"Detallar rubros: Sillas, Ascensor, Transformador…"},
+     {x:"Definir plazos de compras", hint:"Detallar los rubros"},
+     {x:"Establecer cronograma del proyecto", hint:"Fecha de inicio y fin del proyecto total"},
+     {x:"Configurar herramientas de administración de proyectos", hint:"Libre elección"},
+   ]},
+   { h:"Definir documentación", t:[
+     {x:"Especificar entregas y criterios de aceptación — acta de recepción definitiva (Contratista y Líder)", pdf:true, hint:"Entregable PDF"},
+   ]},
+   { h:"Desarrollar planes de riesgo", t:[
+     {x:"Identificar, Analizar y Documentar planes de administración de riesgos"},
+   ]},
+   { h:"Plan de calidad", t:[
+     {x:"Definir rubros representativos para verificar calidad vs especificaciones", hint:"Registrar rubros marcando si califica o no + comentario"},
+   ]},
+   { h:"Organizar recursos del proyecto", t:[
+     {x:"Definir mobiliarios y equipos a reemplazar"},
+     {x:"Plan de excedentes", hint:"Ítems, fecha de retiro, Dpto. Autosuficiencia"},
+     {x:"Formulario de Disposición de excedentes", pdf:true, hint:"Entregable PDF"},
+     {x:"Definir mobiliarios y equipos a conservar", hint:"Empapelar, plastificar, proteger estado"},
+   ]},
+   { h:"Desarrollar planes de adquisición", t:[
+     {x:"Determinar requisitos de adquisición", hint:"Especificación técnica de cada compra"},
+     {x:"Definir contratistas y proveedores", hint:"A quiénes se va a invitar"},
+     {x:"Definición de uso de personal de técnicos (donde aplique)", apl:true},
+   ]},
+   { h:"Pre-Licitación", t:[
+     {x:"Invitación a Pre-Licitación", pdf:true},
+     {x:"Compartir documentación de pre-licitación en sistema", pdf:true},
+     {x:"Documentar. Acta de Pre-Licitación", pdf:true},
+     {x:"Documentar. Consultas y Respuestas", pdf:true},
+   ]},
+   { h:"Licitación", t:[
+     {x:"Documentar. Acta de Licitación", pdf:true},
+     {x:"Documentar. Minuta aprobación de licitación (cuando se requiera)", pdf:true, apl:true},
+     {x:"Documentar. Carta de adjudicación", pdf:true},
+     {x:"Documentar. Contratos y Pólizas", pdf:true},
+     {x:"Documentar. Notificación de proceder", pdf:true},
+   ]},
+   { h:"Desarrollar Plan Financiero", t:[
+     {x:"Preparar plan financiero"},
+     {x:"Apropiación de fondos"},
+   ]},
+ ]},
+
+ { id:"ejec", label:"Ejecución", plan:"Planner · Pestaña 3", groups:[
+   { h:"Compras", t:[
+     {x:"Ejecutar compras proyectadas", hint:"Detallar todos los ítems"},
+     {x:"Verificación de plazos y actualización de cronograma"},
+     {x:"Asignar responsabilidades de entregas", hint:"Orden de compra, si se entregó"},
+   ]},
+   { h:"Dirigir y administrar la ejecución del proyecto", t:[
+     {x:"Repaso de alcance con contratistas"},
+     {x:"Repaso de especificaciones con contratistas"},
+     {x:"Repaso de cronograma de tiempo con contratistas"},
+     {x:"Asignar responsabilidades de muebles y equipos a conservar", hint:"Determinar qué contratista está a cargo"},
+     {x:"Acta de inicio de obra", pdf:true},
+     {x:"Administrar recursos del proyecto", hint:"Notas"},
+     {x:"Administrar plan de riesgo del proyecto", hint:"Notas"},
+     {x:"Administrar plan de calidad", hint:"Notas"},
+   ]},
+ ]},
+
+ { id:"superv", label:"Supervisión y Control", plan:"Planner · Pestaña 4", groups:[
+   { h:"Supervisar y controlar el trabajo del proyecto", t:[
+     {x:"Informe semanal de Supervisión", pdf:true, hint:"Avance del proyecto"},
+   ]},
+   { h:"Control de cambios integrado", t:[
+     {x:"Ordenes de Cambio", pdf:true, apl:true, hint:"Donde aplique"},
+   ]},
+   { h:"Comprobación del ámbito", t:[
+     {x:"Aprobación de rubros terminados"},
+   ]},
+   { h:"Control de programación", t:[
+     {x:"Realizar un seguimiento del estado"},
+     {x:"Mantener programación del proyecto"},
+     {x:"Mantener planes de trabajo"},
+   ]},
+   { h:"Administrar finanzas", t:[
+     {x:"Supervisar desviación de costos y programación"},
+     {x:"Controlar costos"},
+     {x:"Mantener plan financiero"},
+   ]},
+   { h:"Realizar control de calidad", t:[
+     {x:"Controlar calidad"},
+     {x:"Realizar inspecciones y auditorías"},
+     {x:"Realizar revisiones del proyecto"},
+     {x:"Medir niveles de calidad"},
+     {x:"Informe Semanal de Calidad", pdf:true},
+   ]},
+   { h:"Mejora continua y partes interesadas", t:[
+     {x:"Facilitar la mejora continua"},
+     {x:"Supervisar satisfacción"},
+     {x:"Resolver problemas"},
+   ]},
+   { h:"Supervisión y control de riesgos", t:[
+     {x:"Administrar riesgos"},
+   ]},
+   { h:"Administración de contratos", t:[
+     {x:"Administrar contratos"},
+   ]},
+ ]},
+
+ { id:"cierre", label:"Cierre", plan:"Planner · Pestaña 5", groups:[
+   { h:"Cerrar proyecto", t:[
+     {x:"Acta de entrega sustancial", pdf:true},
+     {x:"Acta de entrega definitiva", pdf:true},
+     {x:"Evaluar la satisfacción"},
+     {x:"Resumir resultados del proyecto y lecciones aprendidas"},
+     {x:"Calificación de contratistas. Revisar y reconocer el rendimiento"},
+     {x:"Cerrar registros de proyecto en plataformas"},
+     {x:"Cierre financiero", pdf:true},
+     {x:"Informe fotográfico final de obra", pdf:true},
+     {x:"Planos de línea roja de obra (cuando aplique)", pdf:true, apl:true},
+     {x:"Actualización de SharePoint. Planos y fotos"},
+   ]},
+   { h:"Cierre del contrato", t:[
+     {x:"Cerrar contrato"},
+   ]},
+ ]},
+];
+
+const DOCS = [
+ {sec:"Plan Anual"},
+ {c:"OYM001", d:"Presentación de Plan Anual ppt.", e:"PDF"},
+ {c:"OYM002", d:"Cuadro de presupuesto aprobado en el Plan Anual", e:"PDF"},
+ {c:"OYM003", d:"Acta de Reunión Verificación y Plan propuesto", e:"PDF"},
+ {c:"OYM004", d:"Plan Anual Final Aprobado firmado por el Líder", e:"PDF"},
+ {sec:"Licitación · Pre-licitación"},
+ {c:"OYM005", d:"Alcance del proyecto *", e:"PDF"},
+ {c:"OYM006", d:"Expediente Técnico **", e:"PDF"},
+ {c:"OYM007", d:"Acta de Pre-licitación", e:"PDF"},
+ {c:"OYM008", d:"Adenda Consultas y respuestas", e:"PDF"},
+ {c:"OYM009", d:"Permiso / Licencia de Construcción", e:"PDF", fire:true},
+ {sec:"Licitación"},
+ {c:"OYM010", d:"Acta de licitación", e:"PDF"},
+ {c:"OYM011", d:"Carta de Adjudicación", e:"PDF"},
+ {sec:"Adjudicación"},
+ {c:"OYM012", d:"Notificación a Proceder", e:"PDF"},
+ {sec:"Apropiación de fondos"},
+ {c:"OYM013", d:"Minuta de aprobación cuando se requiera", e:"PDF"},
+ {sec:"Ejecución · Administración Financiera"},
+ {c:"OYM015", d:"Contrato de Construcción ***", e:"PDF", fire:true},
+ {c:"OYM016", d:"Contrato de supervisor de obra", e:"PDF"},
+ {c:"OYM017", d:"Contrato con proveedores", e:"PDF"},
+ {c:"OYM018", d:"Pólizas de Seguro (Carta fianza, Póliza CAR, SCTR)", e:"PDF"},
+ {c:"OYM019", d:"Acta de Inicio de Obra", e:"PDF"},
+ {c:"OYM020", d:"Ordenes de Cambio", e:"PDF", fire:true},
+ {c:"OYM021", d:"Formulario Disposición de excedentes", e:"PDF"},
+ {c:"OYM022", d:"Informe Mensual de Supervisión", e:"PDF"},
+ {c:"OYM023", d:"Informe de Calidad", e:"PDF"},
+ {c:"OYM024", d:"Acta de Entrega Sustancial > 100k", e:"PDF"},
+ {c:"OYM025", d:"Acta de Entrega Definitiva", e:"PDF"},
+ {sec:"Cierre · Cierre Financiero de Proyecto"},
+ {c:"CONS030", d:"Informe Fotográfico final de obra", e:"PDF"},
+ {c:"CONS031", d:"Planos de línea roja de obra (cuando aplique)", e:"PDF/CAD"},
+];
+
+/* ============ STATE ============ */
+const KEY = "oym_dashboard_v1";
+let STATE = load();
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+let saveT;
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(STATE)); }catch(e){}
+  const n=document.getElementById('savedNote');
+  n.textContent="Guardado "+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  clearTimeout(saveT); saveT=setTimeout(()=>{n.textContent="";},2500);
+}
+function g(id,def){ return (STATE[id]!==undefined)?STATE[id]:def; }
+function set(id,v){ STATE[id]=v; save(); }
+
+/* stable task ids */
+PHASES.forEach(p=>p.groups.forEach((gr,gi)=>gr.t.forEach((t,ti)=>{ t.id=p.id+"-"+gi+"-"+ti; })));
+
+/* ============ RENDER ============ */
+let activeTab = g("_tab","inicio");
+const STATUSES = ["Pendiente","En progreso","Terminado","No aplica"];
+
+function taskStatus(t){ return g("st_"+t.id, "Pendiente"); }
+function isDone(t){ return taskStatus(t)==="Terminado"; }
+function isNA(t){ return taskStatus(t)==="No aplica"; }
+
+function renderTabs(){
+  const el=document.getElementById('tabs'); el.innerHTML="";
+  PHASES.concat([{id:"docs",label:"Documentos",docs:true}]).forEach(p=>{
+    const d=document.createElement('div');
+    d.className="tab"+(p.id===activeTab?" active":"");
+    let pct=0;
+    if(!p.docs){ const s=phaseStats(p); pct=s.total? Math.round(s.done/s.total*100):0; }
+    d.innerHTML = p.label + (p.docs?"":'<span class="mini"><i style="width:'+pct+'%"></i></span>');
+    d.onclick=()=>{ activeTab=p.id; set("_tab",p.id); renderTabs(); renderContent(); window.scrollTo({top:0,behavior:'smooth'}); };
+    el.appendChild(d);
+  });
+}
+
+function phaseStats(p){
+  let done=0,prog=0,total=0;
+  p.groups.forEach(gr=>gr.t.forEach(t=>{
+    if(isNA(t)) return;
+    total++;
+    if(isDone(t)) done++;
+    else if(taskStatus(t)==="En progreso") prog++;
+  }));
+  return {done,prog,total};
+}
+
+function globalStats(){
+  let done=0,prog=0,total=0;
+  PHASES.forEach(p=>{ const s=phaseStats(p); done+=s.done; prog+=s.prog; total+=s.total; });
+  return {done,prog,total};
+}
+
+function updateProgress(){
+  const s=globalStats();
+  const pct = s.total? Math.round(s.done/s.total*100):0;
+  document.getElementById('pctTxt').textContent=pct+"%";
+  const C=2*Math.PI*32;
+  document.getElementById('ringfg').setAttribute('stroke-dashoffset', C*(1-pct/100));
+  document.getElementById('mDone').textContent=s.done;
+  document.getElementById('mProg').textContent=s.prog;
+  document.getElementById('mTotal').textContent=s.total;
+}
+
+function statusClass(v){ return v==="Terminado"?"st-done":v==="En progreso"?"st-prog":v==="No aplica"?"st-na":""; }
+
+function renderContent(){
+  const c=document.getElementById('content'); c.innerHTML="";
+  if(activeTab==="docs"){ return renderDocs(c); }
+  const p=PHASES.find(x=>x.id===activeTab);
+  c.innerHTML = '<p class="planlabel">'+p.plan+'</p><h2 class="phasehead">'+p.label+'</h2>';
+  p.groups.forEach((gr,gi)=>{
+    const gEl=document.createElement('div'); gEl.className="group";
+    const done=gr.t.filter(isDone).length;
+    gEl.innerHTML='<h3>'+gr.h+'<span class="gcount">'+done+'/'+gr.t.length+'</span></h3>';
+    gr.t.forEach(t=>gEl.appendChild(taskEl(t)));
+    c.appendChild(gEl);
+  });
+}
+
+function taskEl(t){
+  const row=document.createElement('div');
+  const st=taskStatus(t);
+  row.className="task"+(st==="Terminado"?" done":"");
+
+  const cb=document.createElement('input');
+  cb.type="checkbox"; cb.className="cb"; cb.checked=(st==="Terminado");
+  cb.onchange=()=>{ setStatus(t, cb.checked?"Terminado":"Pendiente"); };
+
+  const body=document.createElement('div'); body.className="tbody";
+  let badges="";
+  if(t.pdf) badges+='<span class="badge pdf">PDF</span>';
+  if(t.apl) badges+='<span class="badge apl">APLICA?</span>';
+  body.innerHTML='<div class="ttext">'+t.x+badges+'</div>'+(t.hint?'<div class="thint">'+t.hint+'</div>':'');
+
+  const ctr=document.createElement('div'); ctr.className="controls";
+  // status select
+  const sel=document.createElement('select'); sel.className="sel "+statusClass(st);
+  STATUSES.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; if(s===st)o.selected=true; sel.appendChild(o); });
+  sel.onchange=()=>{ setStatus(t, sel.value); };
+  // dates
+  const di=document.createElement('input'); di.type="date"; di.className="dt"; di.title="Fecha de inicio";
+  di.value=g("di_"+t.id,""); di.onchange=()=>set("di_"+t.id, di.value);
+  const dsep=document.createElement('span'); dsep.className="lblmini"; dsep.textContent="→";
+  const df=document.createElement('input'); df.type="date"; df.className="dt"; df.title="Fecha final";
+  df.value=g("df_"+t.id,""); df.onchange=()=>set("df_"+t.id, df.value);
+  // comment
+  const cm=document.createElement('input'); cm.className="cmt"; cm.placeholder="Comentario / responsable";
+  cm.value=g("cm_"+t.id,""); cm.oninput=()=>set("cm_"+t.id, cm.value);
+
+  ctr.append(sel, di, dsep, df, cm);
+  body.appendChild(ctr);
+  row.append(cb, body);
+  return row;
+}
+
+function setStatus(t,v){
+  set("st_"+t.id, v);
+  renderContent(); renderTabs(); updateProgress();
+}
+
+function renderDocs(c){
+  c.innerHTML = '<p class="planlabel">Índice documental</p><h2 class="phasehead">Documentos del Proyecto</h2>'+
+    '<p class="thint" style="margin-bottom:16px">Marca cada documento cuando esté archivado. '+
+    '<span class="fire">●</span> = requiere revisión Antifuego.</p>';
+  const tbl=document.createElement('table');
+  tbl.innerHTML='<thead><tr><th style="width:34px"></th><th style="width:90px">Código</th><th>Documento</th><th style="width:110px">Formato</th></tr></thead>';
+  const tb=document.createElement('tbody');
+  DOCS.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    if(r.sec){ tr.className="sec"; tr.innerHTML='<td></td><td colspan="3">'+r.sec+'</td>'; tb.appendChild(tr); return; }
+    const id="doc_"+r.c;
+    const td0=document.createElement('td');
+    const cb=document.createElement('input'); cb.type="checkbox"; cb.className="cb"; cb.style.width="18px"; cb.style.height="18px";
+    cb.checked=g(id,false); cb.onchange=()=>{ set(id, cb.checked); };
+    td0.appendChild(cb);
+    tr.appendChild(td0);
+    tr.insertAdjacentHTML('beforeend','<td><span class="code">'+r.c+'</span></td>');
+    tr.insertAdjacentHTML('beforeend','<td>'+r.d+(r.fire?'<span class="fire">● Antifuego</span>':'')+'</td>');
+    tr.insertAdjacentHTML('beforeend','<td><span class="fmt">'+r.e+'</span></td>');
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb); c.appendChild(tbl);
+}
+
+/* ============ TOP FIELDS ============ */
+document.querySelectorAll('[data-k]').forEach(inp=>{
+  inp.value=g(inp.dataset.k,"");
+  inp.addEventListener('input',()=>set(inp.dataset.k, inp.value));
+});
+
+/* ============ TOOLBAR ============ */
+document.getElementById('btnReset').onclick=()=>{
+  if(confirm("¿Reiniciar todo el seguimiento? Se borrarán estados, fechas y comentarios guardados en este navegador.")){
+    STATE={}; try{localStorage.removeItem(KEY);}catch(e){}
+    location.reload();
+  }
+};
+document.getElementById('btnExport').onclick=()=>{
+  const blob=new Blob([JSON.stringify(STATE,null,2)],{type:"application/json"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(g("numero","proyecto")||"proyecto")+"-oym.json"; a.click();
+};
+
+/* ============ INIT ============ */
+renderTabs(); renderContent(); updateProgress();
+</script>
+</body>
+</html>
