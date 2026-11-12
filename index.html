@@ -95,24 +95,69 @@ button,input,select{font-family:inherit}
 .brand b{font-size:14px; font-weight:700; letter-spacing:-.2px; display:block; line-height:1.2}
 .brand span{font-size:11px; color:var(--muted); display:block}
 
-.gnav{display:flex; gap:6px; flex-wrap:wrap; align-items:center; flex:1 1 auto}
-.gnav .nlbl{font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--faint); margin-right:2px}
-.gbtn{
-  display:flex; align-items:center; gap:8px; cursor:pointer;
-  background:var(--surface2); border:1px solid var(--line); border-radius:10px;
-  padding:6px 11px 6px 7px; color:var(--muted); font-size:12.5px; font-weight:600; transition:.14s;
+.crumb{display:flex; gap:9px; align-items:center; flex:1 1 auto; min-width:0; font-size:12.5px}
+.backbtn{
+  display:flex; align-items:center; gap:7px; cursor:pointer; flex:none;
+  background:var(--surface2); border:1px solid var(--line); border-radius:9px;
+  padding:7px 12px; color:var(--muted); font-size:12.5px; font-weight:600; transition:.14s;
 }
-.gbtn:hover{color:var(--txt); border-color:var(--line2); transform:translateY(-1px)}
-.gbtn.active{
-  background:linear-gradient(160deg,#3b82f6,#2563eb); border-color:#2563eb; color:#fff;
-  box-shadow:0 2px 12px rgba(59,130,246,.4);
+.backbtn:hover{color:var(--txt); border-color:var(--accent)}
+.crumb .cpath{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}
+.crumb .cpath b{color:var(--txt); font-weight:600}
+
+/* ---- pantalla principal: gerencias y proyectos ---- */
+.gcard{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  box-shadow:var(--sh); margin-bottom:15px; overflow:hidden;
 }
-.gbtn .num{
-  display:inline-flex; align-items:center; justify-content:center; width:21px; height:21px; flex:none;
-  border-radius:6px; background:var(--surface3); font-size:11px; font-weight:800; color:var(--accent);
+.gcard-h{display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line); flex-wrap:wrap}
+.gcard-h .gnum{
+  display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; flex:none;
+  border-radius:9px; background:var(--accent-soft); color:var(--accent); font-size:13px; font-weight:800;
 }
-.gbtn.active .num{background:rgba(255,255,255,.25); color:#fff}
-.gbtn .gp{font-size:10.5px; font-weight:700; opacity:.75; font-variant-numeric:tabular-nums}
+.gcard-h h2{margin:0; font-size:15px; font-weight:700; letter-spacing:-.2px}
+.gcard-h .gmeta{font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+.gcard-h .spacer{flex:1}
+.gbar{width:120px; height:6px; background:var(--surface3); border-radius:10px; overflow:hidden; flex:none}
+.gbar i{display:block; height:100%; background:var(--ok); border-radius:10px; transition:width .35s}
+.gpct{font-size:12px; font-weight:800; color:var(--txt); font-variant-numeric:tabular-nums; min-width:34px; text-align:right}
+.btn-sm{
+  background:var(--accent); border:1px solid var(--accent); color:#fff; flex:none;
+  padding:7px 13px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:.14s;
+}
+.btn-sm:hover{filter:brightness(1.1)}
+.btn-gh{
+  background:transparent; border:1px solid var(--line2); color:var(--muted); flex:none;
+  padding:7px 11px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer;
+}
+.btn-gh:hover{color:var(--txt); border-color:var(--accent)}
+
+.prow{
+  display:flex; align-items:center; gap:14px; padding:13px 18px;
+  border-bottom:1px solid var(--line); cursor:pointer; transition:.14s; flex-wrap:wrap;
+}
+.prow:last-child{border-bottom:none}
+.prow:hover{background:var(--surface2)}
+.pinfo{flex:1 1 200px; min-width:0}
+.pinfo b{display:block; font-size:13.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pinfo small{font-size:11px; color:var(--faint)}
+.pchips{display:flex; gap:6px; flex-wrap:wrap; flex:none}
+.pchip{
+  font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px;
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.pchip.c-ok{background:var(--ok-soft); color:var(--ok)}
+.pchip.c-pr{background:var(--warn-soft); color:var(--warn)}
+.pchip.c-pe{background:var(--surface3); color:var(--muted)}
+.pchip.c-la{background:var(--danger-soft); color:var(--danger)}
+.pacts{display:flex; gap:5px; flex:none}
+.iact{
+  background:transparent; border:1px solid transparent; color:var(--faint);
+  width:28px; height:28px; border-radius:7px; cursor:pointer; font-size:12px;
+}
+.iact:hover{border-color:var(--line2); color:var(--txt)}
+.iact.del:hover{border-color:var(--danger); color:var(--danger)}
+.pempty{padding:26px 18px; text-align:center; color:var(--faint); font-size:12.5px}
 .iconbtn{
   background:var(--surface2); border:1px solid var(--line); color:var(--muted);
   width:34px; height:34px; border-radius:9px; cursor:pointer; font-size:15px; flex:none;
@@ -387,7 +432,7 @@ tbody tr.sec:hover td{background:var(--surface3)}
       <div class="logo">OYM</div>
       <div><b>Proyectos OYM</b><span>Operaciones y Mantenimiento</span></div>
     </div>
-    <nav class="gnav" id="gnav"></nav>
+    <nav class="crumb" id="crumb"></nav>
     <div class="tools">
       <button class="iconbtn" id="btnPal" title="Colores y tema">◐</button>
       <button class="iconbtn" id="btnMenu" title="Más opciones">⋯</button>
@@ -398,11 +443,11 @@ tbody tr.sec:hover td{background:var(--surface3)}
         <div class="accents" id="accentList"></div>
         <label class="custom">Personalizado <input type="color" id="accentCustom"></label>
       </div>
-      <div class="pop" id="popMenu" hidden style="width:210px">
+      <div class="pop" id="popMenu" hidden style="width:225px">
         <button class="popbtn" id="btnExport">Exportar a Excel (CSV)</button>
         <button class="popbtn" id="btnPrint">Imprimir</button>
         <div class="popsep"></div>
-        <button class="popbtn danger" id="btnReset">Reiniciar esta gerencia</button>
+        <button class="popbtn danger" id="btnReset">Reiniciar este proyecto</button>
       </div>
     </div>
   </div>
@@ -410,9 +455,25 @@ tbody tr.sec:hover td{background:var(--surface3)}
 
 <main class="wrap">
 
+<!-- ================= PANTALLA PRINCIPAL ================= -->
+<section id="viewHome">
   <div class="pagehead">
     <div>
-      <h1>Documentos Proyectos OYM</h1>
+      <h1>Panel principal</h1>
+    </div>
+    <div class="gtag"><span class="dot"></span><span id="homeSub">—</span></div>
+  </div>
+
+  <div class="kpis" id="homeKpis"></div>
+  <div id="gerList"></div>
+</section>
+
+<!-- ================= VISTA DE PROYECTO ================= -->
+<section id="viewProj" hidden>
+
+  <div class="pagehead">
+    <div>
+      <h1 id="projTitle">Proyecto</h1>
     </div>
     <div class="gtag"><span class="dot"></span><span id="gtagTxt">Gerencia 1</span></div>
   </div>
@@ -459,7 +520,11 @@ tbody tr.sec:hover td{background:var(--surface3)}
     <span><i style="background:var(--warn)"></i>En progreso</span>
     <span><i style="background:var(--danger)"></i>Atrasado</span>
     <span><i style="background:var(--na)"></i>No aplica</span>
-    <span>Los datos se guardan en este navegador · cada gerencia es independiente</span>
+  </div>
+</section>
+
+  <div class="legend" style="justify-content:space-between">
+    <span>Los datos se guardan en este navegador · cada gerencia y proyecto es independiente</span>
     <span class="savednote" id="saved"></span>
   </div>
 
@@ -651,6 +716,30 @@ const KEY="oym_dash_v2", NGER=5;
 let STATE=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}})();
 let GERS=(STATE._gers&&STATE._gers.length===NGER)?STATE._gers:["Gerencia 1","Gerencia 2","Gerencia 3","Gerencia 4","Gerencia 5"];
 let GER=(typeof STATE._ger==="number")?STATE._ger:0;
+
+/* --- proyectos por gerencia: {0:[{id,name}], 1:[...] } --- */
+function migrate(){
+  if(STATE._projs)return;                       // ya migrado
+  const projs={};
+  for(let i=0;i<NGER;i++){
+    const pre="G"+i+"|";
+    const keys=Object.keys(STATE).filter(k=>k.indexOf(pre)===0);
+    if(!keys.length){projs[i]=[];continue}
+    const pid="m"+i;
+    const name=String(STATE[pre+"proyecto"]||"").trim()||"Proyecto 1";
+    keys.forEach(k=>{STATE["G"+i+"P"+pid+"|"+k.slice(pre.length)]=STATE[k];delete STATE[k]});
+    projs[i]=[{id:pid,name:name}];
+  }
+  STATE._projs=projs;
+}
+migrate();
+let PROJS=STATE._projs||{};
+for(let i=0;i<NGER;i++)if(!Array.isArray(PROJS[i]))PROJS[i]=[];
+let PROJ=STATE._proj||null;   // id del proyecto abierto
+let VIEW=STATE._view||"home"; // "home" | "proj"
+const newId=()=>"p"+Date.now().toString(36)+Math.floor(Math.random()*999).toString(36);
+const projOf=(gi,pid)=>(PROJS[gi]||[]).find(p=>p.id===pid);
+
 const THEMES=[
  {id:"oscuro", n:"Oscuro",  c:["#0f1318","#232a34","#3b82f6"]},
  {id:"claro",  n:"Claro",   c:["#f4f6f9","#ffffff","#2563eb"]},
@@ -665,11 +754,12 @@ let ACCENT=STATE._accent||"";
 let activeTab=STATE._tab||"inicio";
 let filter="all", query="";
 
-function nk(k){return k[0]==="_"?k:("G"+GER+"|"+k)}
+function nk(k){return k[0]==="_"?k:("G"+GER+"P"+PROJ+"|"+k)}
 function g(k,d){const v=STATE[nk(k)];return v===undefined?d:v}
 let st;
 function save(){
-  STATE._gers=GERS; STATE._ger=GER; STATE._theme=THEME; STATE._accent=ACCENT; STATE._tab=activeTab;
+  STATE._gers=GERS; STATE._ger=GER; STATE._projs=PROJS; STATE._proj=PROJ; STATE._view=VIEW;
+  STATE._theme=THEME; STATE._accent=ACCENT; STATE._tab=activeTab;
   try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){}
   const n=document.getElementById('saved');
   n.textContent="✓ Guardado "+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
@@ -698,20 +788,33 @@ function isSoon(t){
 }
 function allTasks(){const a=[];PHASES.forEach(p=>p.groups.forEach(gr=>gr.t.forEach(t=>a.push({t,p,gr}))));return a}
 
-function stats(gerIdx){
-  const prev=GER; if(gerIdx!==undefined)GER=gerIdx;
-  let done=0,prog=0,total=0,late=0,soon=0,pdfT=0,pdfD=0;
+function stats(gi,pid){
+  const pg=GER, pp=PROJ;
+  if(gi!==undefined)GER=gi;
+  if(pid!==undefined)PROJ=pid;
+  let done=0,prog=0,pend=0,total=0,late=0,soon=0,pdfT=0,pdfD=0;
   allTasks().forEach(({t})=>{
     if(isNA(t))return; total++;
-    if(isDone(t))done++; else if(stOf(t)==="En progreso")prog++;
+    const s=stOf(t);
+    if(s==="Terminado")done++; else if(s==="En progreso")prog++; else pend++;
     if(isLate(t))late++; else if(isSoon(t))soon++;
     if(t.pdf){pdfT++; if(isDone(t))pdfD++}
   });
   let docT=0,docD=0;
   DOCS.forEach(r=>{if(r.sec)return;docT++;if(g("doc_"+r.c,false))docD++});
   const pct=total?Math.round(done/total*100):0;
-  GER=prev;
-  return {done,prog,total,late,soon,pdfT,pdfD,docT,docD,pct};
+  GER=pg; PROJ=pp;
+  return {done,prog,pend,total,late,soon,pdfT,pdfD,docT,docD,pct};
+}
+/* suma de todos los proyectos de una gerencia */
+function gerStats(gi){
+  const acc={done:0,prog:0,pend:0,total:0,late:0,projects:(PROJS[gi]||[]).length};
+  (PROJS[gi]||[]).forEach(p=>{
+    const s=stats(gi,p.id);
+    acc.done+=s.done; acc.prog+=s.prog; acc.pend+=s.pend; acc.total+=s.total; acc.late+=s.late;
+  });
+  acc.pct=acc.total?Math.round(acc.done/acc.total*100):0;
+  return acc;
 }
 function phaseStats(p){
   let done=0,total=0;
@@ -724,31 +827,138 @@ function etapaActual(){
 }
 const money=n=>{const v=parseFloat(n);return isNaN(v)?null:v.toLocaleString('es-PE',{maximumFractionDigits:0})};
 
-/* =================== RENDER: MENÚ GERENCIAS =================== */
-function renderGnav(){
-  const el=document.getElementById('gnav'); el.innerHTML='<span class="nlbl">Gerencia</span>';
-  GERS.forEach((name,i)=>{
-    const s=stats(i);
-    const b=document.createElement('div');
-    b.className="gbtn"+(i===GER?" active":"");
-    b.innerHTML='<span class="num">'+(i+1)+'</span><span>'+esc(name)+'</span><span class="gp">'+s.pct+'%</span>';
-    b.title="Cambiar a "+name+" · "+s.done+"/"+s.total+" tareas";
-    b.onclick=()=>switchGer(i);
-    el.appendChild(b);
-  });
-  const r=document.createElement('button');
-  r.className="iconbtn"; r.textContent="✎"; r.title="Renombrar gerencia activa";
-  r.onclick=renameGer; el.appendChild(r);
-  document.getElementById('gtagTxt').textContent=GERS[GER];
+/* =================== NAVEGACIÓN =================== */
+function renderCrumb(){
+  const el=document.getElementById('crumb'); el.innerHTML="";
+  if(VIEW==="home")return;
+  const b=document.createElement('button');
+  b.className="backbtn"; b.innerHTML="&#8592; Panel principal";
+  b.onclick=goHome; el.appendChild(b);
+  const p=projOf(GER,PROJ);
+  const c=document.createElement('span'); c.className="cpath";
+  c.innerHTML=esc(GERS[GER])+' / <b>'+esc(p?p.name:"Proyecto")+'</b>';
+  el.appendChild(c);
 }
-function switchGer(i){
-  GER=i; save(); refreshAll(); window.scrollTo({top:0,behavior:'smooth'});
+function goHome(){
+  VIEW="home"; save();
+  document.getElementById('viewHome').hidden=false;
+  document.getElementById('viewProj').hidden=true;
+  renderCrumb(); renderHome(); window.scrollTo({top:0});
 }
-function renameGer(){
-  const v=prompt("Nombre de la gerencia "+(GER+1)+":",GERS[GER]);
+function openProj(gi,pid){
+  GER=gi; PROJ=pid; VIEW="proj"; save();
+  document.getElementById('viewHome').hidden=true;
+  document.getElementById('viewProj').hidden=false;
+  refreshAll(); window.scrollTo({top:0});
+}
+
+/* =================== PROYECTOS: ALTA / EDICIÓN / BAJA =============== */
+function addProj(gi){
+  const n=prompt("Nombre del nuevo proyecto en "+GERS[gi]+":","");
+  if(n===null)return;
+  const p={id:newId(),name:n.trim()||("Proyecto "+((PROJS[gi]||[]).length+1))};
+  PROJS[gi]=(PROJS[gi]||[]).concat([p]);
+  STATE["G"+gi+"P"+p.id+"|proyecto"]=p.name;
+  save(); openProj(gi,p.id);
+}
+function renameProj(gi,pid){
+  const p=projOf(gi,pid); if(!p)return;
+  const n=prompt("Nombre del proyecto:",p.name);
+  if(n===null)return;
+  p.name=n.trim()||p.name;
+  STATE["G"+gi+"P"+pid+"|proyecto"]=p.name;
+  save(); renderHome(); renderCrumb();
+}
+function delProj(gi,pid){
+  const p=projOf(gi,pid); if(!p)return;
+  if(!confirm('¿Eliminar el proyecto "'+p.name+'" de '+GERS[gi]+'?\n\nSe borrará todo su seguimiento. Esta acción no se puede deshacer.'))return;
+  PROJS[gi]=PROJS[gi].filter(x=>x.id!==pid);
+  const pre="G"+gi+"P"+pid+"|";
+  Object.keys(STATE).forEach(k=>{if(k.indexOf(pre)===0)delete STATE[k]});
+  if(PROJ===pid)PROJ=null;
+  save(); renderHome();
+}
+function renameGer(gi){
+  const v=prompt("Nombre de la gerencia "+(gi+1)+":",GERS[gi]);
   if(v===null)return;
-  GERS[GER]=v.trim()||("Gerencia "+(GER+1)); save(); renderGnav();
+  GERS[gi]=v.trim()||("Gerencia "+(gi+1)); save(); renderHome(); renderCrumb();
 }
+
+/* =================== RENDER: PANTALLA PRINCIPAL =================== */
+function renderHome(){
+  /* resumen global */
+  let D=0,P=0,E=0,T=0,L=0,NP=0;
+  for(let i=0;i<NGER;i++){
+    const a=gerStats(i);
+    D+=a.done; P+=a.prog; E+=a.pend; T+=a.total; L+=a.late; NP+=a.projects;
+  }
+  const pct=T?Math.round(D/T*100):0, C=2*Math.PI*30;
+  document.getElementById('homeSub').textContent=NP+(NP===1?" proyecto activo":" proyectos activos");
+  document.getElementById('homeKpis').innerHTML=
+   '<div class="kpi"><div class="kl">Avance general</div>'+
+     '<div class="kpi-ring"><div class="ring"><svg width="72" height="72">'+
+       '<circle cx="36" cy="36" r="30" stroke="var(--surface3)" stroke-width="7" fill="none"/>'+
+       '<circle cx="36" cy="36" r="30" stroke="'+(pct===100&&T?'var(--ok)':'var(--accent)')+'" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-pct/100))+'"/>'+
+     '</svg><div class="pct">'+pct+'%</div></div>'+
+     '<div style="font-size:11.5px;color:var(--muted);line-height:1.7">'+
+       '<div><b>'+NP+'</b> proyectos</div><div><b>'+T+'</b> tareas</div></div></div></div>'+
+   '<div class="kpi k-ok"><div class="kl">Terminadas</div><div class="kv">'+D+'</div><div class="kf">de '+T+' tareas aplicables</div></div>'+
+   '<div class="kpi k-warn"><div class="kl">En proceso</div><div class="kv">'+P+'</div><div class="kf">en ejecución ahora</div></div>'+
+   '<div class="kpi k-mut"><div class="kl">Pendientes</div><div class="kv">'+E+'</div><div class="kf">sin iniciar</div></div>'+
+   '<div class="kpi '+(L?'k-dan':'k-ok')+'"><div class="kl">Atrasadas</div><div class="kv">'+L+'</div><div class="kf">'+(L?'requieren atención':'sin atrasos')+'</div></div>';
+
+  /* una tarjeta por gerencia */
+  const list=document.getElementById('gerList'); list.innerHTML="";
+  GERS.forEach((name,gi)=>{
+    const a=gerStats(gi);
+    const card=document.createElement('section'); card.className="gcard";
+    const h=document.createElement('div'); h.className="gcard-h";
+    h.innerHTML='<span class="gnum">'+(gi+1)+'</span><h2>'+esc(name)+'</h2>'+
+      '<span class="gmeta">'+a.projects+(a.projects===1?' proyecto':' proyectos')+'</span>'+
+      '<span class="spacer"></span>'+
+      '<span class="gbar"><i style="width:'+a.pct+'%"></i></span><span class="gpct">'+a.pct+'%</span>';
+    const ren=document.createElement('button');
+    ren.className="btn-gh"; ren.textContent="✎"; ren.title="Renombrar gerencia";
+    ren.onclick=()=>renameGer(gi);
+    const add=document.createElement('button');
+    add.className="btn-sm"; add.textContent="+ Nuevo proyecto";
+    add.onclick=()=>addProj(gi);
+    h.append(ren,add);
+    card.appendChild(h);
+
+    if(!a.projects){
+      const e=document.createElement('div'); e.className="pempty";
+      e.textContent="Esta gerencia todavía no tiene proyectos.";
+      card.appendChild(e);
+    }else{
+      PROJS[gi].forEach(p=>{
+        const s=stats(gi,p.id);
+        const row=document.createElement('div'); row.className="prow";
+        const num=g0(gi,p.id,"numero"), fm=g0(gi,p.id,"fm"), est=g0(gi,p.id,"estado");
+        const meta=[num,fm,est].filter(Boolean).join(" · ")||"Sin datos generales";
+        row.innerHTML='<div class="pinfo"><b>'+esc(p.name)+'</b><small>'+esc(meta)+'</small></div>'+
+          '<div class="pchips">'+
+            '<span class="pchip c-ok">'+s.done+' terminadas</span>'+
+            '<span class="pchip c-pr">'+s.prog+' en proceso</span>'+
+            '<span class="pchip c-pe">'+s.pend+' pendientes</span>'+
+            (s.late?'<span class="pchip c-la">'+s.late+' atrasadas</span>':'')+
+          '</div>'+
+          '<span class="gbar"><i style="width:'+s.pct+'%"></i></span><span class="gpct">'+s.pct+'%</span>';
+        const acts=document.createElement('div'); acts.className="pacts";
+        const r=document.createElement('button'); r.className="iact"; r.textContent="✎"; r.title="Renombrar";
+        r.onclick=e=>{e.stopPropagation();renameProj(gi,p.id)};
+        const d=document.createElement('button'); d.className="iact del"; d.textContent="✕"; d.title="Eliminar";
+        d.onclick=e=>{e.stopPropagation();delProj(gi,p.id)};
+        acts.append(r,d); row.appendChild(acts);
+        row.onclick=()=>openProj(gi,p.id);
+        card.appendChild(row);
+      });
+    }
+    list.appendChild(card);
+  });
+}
+/* lee un campo de otro proyecto sin cambiar el activo */
+function g0(gi,pid,k){return STATE["G"+gi+"P"+pid+"|"+k]||""}
 
 /* =================== RENDER: KPIs =================== */
 function renderKpis(){
@@ -885,7 +1095,12 @@ function taskEl(t){
   row.append(cb,b); return row;
 }
 function setStatus(t,v){set("st_"+t.id,v);renderContent();refreshHead()}
-function refreshHead(){renderGnav();renderKpis();renderTabs()}
+function refreshHead(){renderKpis();renderTabs()}
+function renderProjHead(){
+  const p=projOf(GER,PROJ);
+  document.getElementById('projTitle').textContent=p?p.name:"Proyecto";
+  document.getElementById('gtagTxt').textContent=GERS[GER];
+}
 
 function renderDocs(c){
   const s=stats();
@@ -932,22 +1147,43 @@ function renderDocs(c){
 function loadFields(){document.querySelectorAll('[data-k]').forEach(i=>i.value=g(i.dataset.k,""))}
 document.querySelectorAll('[data-k]').forEach(i=>{
   const ev=i.tagName==="SELECT"?"change":"input";
-  i.addEventListener(ev,()=>{set(i.dataset.k,i.value);renderKpis()});
+  i.addEventListener(ev,()=>{
+    set(i.dataset.k,i.value);
+    /* el campo Proyecto es el nombre del proyecto: se refleja en el panel principal */
+    if(i.dataset.k==="proyecto"){
+      const p=projOf(GER,PROJ);
+      if(p){p.name=i.value.trim()||p.name; save(); renderProjHead(); renderCrumb()}
+    }
+    renderKpis();
+  });
 });
 
 /* =================== OPCIONES =================== */
 document.getElementById('btnPrint').onclick=()=>window.print();
 document.getElementById('btnExport').onclick=()=>{
-  const rows=[["Gerencia","Fase","Grupo","Tarea","Estado","Responsable","Inicio","Fin","Notas"]];
-  allTasks().forEach(({t,p,gr})=>rows.push([GERS[GER],p.label,gr.h,t.x,stOf(t),g("rs_"+t.id,""),g("di_"+t.id,""),g("df_"+t.id,""),g("nt_"+t.id,"")]));
+  const rows=[["Gerencia","Proyecto","Fase","Grupo","Tarea","Estado","Responsable","Inicio","Fin","Notas"]];
+  const pg=GER,pp=PROJ;
+  const scope = VIEW==="proj" ? [[GER,PROJ]] :
+    [].concat(...GERS.map((_,gi)=>(PROJS[gi]||[]).map(p=>[gi,p.id])));
+  scope.forEach(([gi,pid])=>{
+    GER=gi; PROJ=pid;
+    const pn=(projOf(gi,pid)||{}).name||"";
+    allTasks().forEach(({t,p,gr})=>rows.push([GERS[gi],pn,p.label,gr.h,t.x,stOf(t),g("rs_"+t.id,""),g("di_"+t.id,""),g("df_"+t.id,""),g("nt_"+t.id,"")]));
+  });
+  GER=pg; PROJ=pp;
   const csv="﻿"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\n");
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-  a.download=(g("numero","")||GERS[GER].replace(/\s+/g,"-"))+"-seguimiento.csv"; a.click();
+  a.download=(VIEW==="proj"?((projOf(GER,PROJ)||{}).name||"proyecto"):"todos-los-proyectos").replace(/\s+/g,"-")+"-oym.csv";
+  a.click();
 };
 document.getElementById('btnReset').onclick=()=>{
-  if(!confirm('¿Reiniciar el seguimiento de "'+GERS[GER]+'"?\n\nSe borrarán estados, fechas, responsables y notas de esta gerencia. Las demás gerencias no se modifican.'))return;
-  Object.keys(STATE).forEach(k=>{if(k.indexOf("G"+GER+"|")===0)delete STATE[k]});
+  if(VIEW!=="proj"){alert("Abre un proyecto para reiniciar su seguimiento.");return}
+  const p=projOf(GER,PROJ);
+  if(!confirm('¿Reiniciar el seguimiento de "'+(p?p.name:"este proyecto")+'"?\n\nSe borrarán estados, fechas, responsables y notas. Los demás proyectos no se modifican.'))return;
+  const pre="G"+GER+"P"+PROJ+"|";
+  Object.keys(STATE).forEach(k=>{if(k.indexOf(pre)===0)delete STATE[k]});
+  if(p)STATE[pre+"proyecto"]=p.name;
   save(); refreshAll();
 };
 /* =================== TEMA Y COLORES =================== */
@@ -963,25 +1199,25 @@ function renderPalette(){
     const b=document.createElement('div');
     b.className="thm"+(t.id===THEME?" on":"");
     b.innerHTML='<span class="sw">'+t.c.map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>'+t.n;
-    b.onclick=()=>{THEME=t.id;save();applyTheme();renderKpis()};
+    b.onclick=()=>{THEME=t.id;save();applyTheme();repaint()};
     tl.appendChild(b);
   });
   const al=document.getElementById('accentList'); al.innerHTML="";
   ACCENTS.forEach(c=>{
     const b=document.createElement('button');
     b.className="acc"+(ACCENT===c?" on":""); b.style.background=c; b.title=c;
-    b.onclick=()=>{ACCENT=c;save();applyTheme();renderKpis()};
+    b.onclick=()=>{ACCENT=c;save();applyTheme();repaint()};
     al.appendChild(b);
   });
   const rb=document.createElement('button');
   rb.className="acc"+(ACCENT?"":" on"); rb.title="Color propio del tema";
   rb.style.cssText="background:transparent;border:2px dashed var(--line2);color:var(--faint);font-size:13px;line-height:1";
   rb.textContent="↺";
-  rb.onclick=()=>{ACCENT="";save();applyTheme();renderKpis()};
+  rb.onclick=()=>{ACCENT="";save();applyTheme();repaint()};
   al.appendChild(rb);
   const cc=document.getElementById('accentCustom');
   cc.value=ACCENT||getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||"#3b82f6";
-  cc.oninput=()=>{ACCENT=cc.value;save();applyTheme();renderKpis()};
+  cc.oninput=()=>{ACCENT=cc.value;save();applyTheme();repaint()};
 }
 /* abrir / cerrar popovers */
 function togglePop(id){
@@ -997,10 +1233,12 @@ document.addEventListener('click',()=>togglePop(null));
 document.addEventListener('keydown',e=>{if(e.key==="Escape")togglePop(null)});
 
 /* =================== INIT =================== */
-function refreshAll(){loadFields();renderGnav();renderKpis();renderTabs();renderContent()}
+function refreshAll(){loadFields();renderProjHead();renderKpis();renderTabs();renderContent();renderCrumb()}
+function repaint(){ if(VIEW==="home")renderHome(); else {renderKpis();renderContent()} }
 if(!PHASES.some(p=>p.id===activeTab))activeTab="inicio";
 applyTheme();
-refreshAll();
+if(VIEW==="proj"&&PROJ&&projOf(GER,PROJ))openProj(GER,PROJ);
+else goHome();
 </script>
 </body>
 </html>
